@@ -22,9 +22,13 @@ View the README for instructions on how to run the application.
 """
 
 import json
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
 from pathlib import Path
 from textwrap import dedent
-from typing import Optional
+from typing import Optional, Dict, List, Any, Union
 
 from agno.agent import Agent
 from agno.embedder.openai import OpenAIEmbedder
@@ -119,6 +123,209 @@ semantic_model_str = json.dumps(semantic_model, indent=2)
 # *******************************
 
 
+def create_bar_chart(
+    data: Union[str, Dict[str, List[Any]]],
+    title: str,
+    x_label: str,
+    y_label: str,
+    filename: str = "bar_chart.png",
+    color: str = "blue",
+    horizontal: bool = False,
+    sort_values: bool = False,
+) -> str:
+    """
+    Create a bar chart from the provided data and save it as a PNG file.
+
+    Args:
+        data: JSON string or dictionary containing the data for the chart.
+              Should have keys for x and y values.
+        title: Title of the chart.
+        x_label: Label for the x-axis.
+        y_label: Label for the y-axis.
+        filename: Output filename (will be saved in the output directory).
+        color: Color of the bars.
+        horizontal: Whether to create a horizontal bar chart.
+        sort_values: Whether to sort the data by values.
+
+    Returns:
+        str: Path to the saved chart image.
+    """
+    plt.figure(figsize=(10, 6))
+
+    # Convert data to DataFrame if it's a JSON string
+    if isinstance(data, str):
+        data = json.loads(data)
+
+    df = pd.DataFrame(data)
+
+    # Get the column names
+    if len(df.columns) < 2:
+        return "Error: Data must have at least two columns for x and y values."
+
+    x_col = df.columns[0]
+    y_col = df.columns[1]
+
+    # Sort if requested
+    if sort_values:
+        df = df.sort_values(by=y_col)
+
+    # Create the bar chart
+    if horizontal:
+        ax = sns.barplot(y=x_col, x=y_col, data=df, color=color)
+    else:
+        ax = sns.barplot(x=x_col, y=y_col, data=df, color=color)
+
+    # Set labels and title
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.tight_layout()
+
+    # Ensure filename has .png extension
+    if not filename.endswith(".png"):
+        filename += ".png"
+
+    # Save the chart to the output directory
+    output_path = os.path.join(output_dir, filename)
+    plt.savefig(output_path)
+    plt.close()
+
+    return output_path
+
+
+def create_pie_chart(
+    data: Union[str, Dict[str, List[Any]]],
+    title: str,
+    filename: str = "pie_chart.png",
+    colors: Optional[List[str]] = None,
+    explode: Optional[List[float]] = None,
+    autopct: str = "%1.1f%%",
+) -> str:
+    """
+    Create a pie chart from the provided data and save it as a PNG file.
+
+    Args:
+        data: JSON string or dictionary containing the data for the chart.
+              Should have keys for labels and values.
+        title: Title of the chart.
+        filename: Output filename (will be saved in the output directory).
+        colors: List of colors for pie slices. If None, uses default colors.
+        explode: List of values to "explode" slices away from center.
+        autopct: Format string for percentage labels.
+
+    Returns:
+        str: Path to the saved chart image.
+    """
+    plt.figure(figsize=(10, 8))
+
+    # Convert data to DataFrame if it's a JSON string
+    if isinstance(data, str):
+        data = json.loads(data)
+
+    df = pd.DataFrame(data)
+
+    # Get the column names
+    if len(df.columns) < 2:
+        return "Error: Data must have at least two columns for labels and values."
+
+    label_col = df.columns[0]
+    value_col = df.columns[1]
+
+    # Get labels and values
+    labels = df[label_col].tolist()
+    values = df[value_col].tolist()
+
+    # Create the pie chart
+    plt.pie(
+        values,
+        labels=labels,
+        colors=colors,
+        explode=explode,
+        autopct=autopct,
+        shadow=True,
+        startangle=90,
+    )
+    plt.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle
+
+    plt.title(title)
+    plt.tight_layout()
+
+    # Ensure filename has .png extension
+    if not filename.endswith(".png"):
+        filename += ".png"
+
+    # Save the chart to the output directory
+    output_path = os.path.join(output_dir, filename)
+    plt.savefig(output_path)
+    plt.close()
+
+    return output_path
+
+
+def create_line_chart(
+    data: Union[str, Dict[str, List[Any]]],
+    title: str,
+    x_label: str,
+    y_label: str,
+    filename: str = "line_chart.png",
+    color: str = "blue",
+    marker: str = "o",
+    linestyle: str = "-",
+) -> str:
+    """
+    Create a line chart from the provided data and save it as a PNG file.
+
+    Args:
+        data: JSON string or dictionary containing the data for the chart.
+              Should have keys for x and y values.
+        title: Title of the chart.
+        x_label: Label for the x-axis.
+        y_label: Label for the y-axis.
+        filename: Output filename (will be saved in the output directory).
+        color: Color of the line.
+        marker: Marker style for data points.
+        linestyle: Style of the line.
+
+    Returns:
+        str: Path to the saved chart image.
+    """
+    plt.figure(figsize=(10, 6))
+
+    # Convert data to DataFrame if it's a JSON string
+    if isinstance(data, str):
+        data = json.loads(data)
+
+    df = pd.DataFrame(data)
+
+    # Get the column names
+    if len(df.columns) < 2:
+        return "Error: Data must have at least two columns for x and y values."
+
+    x_col = df.columns[0]
+    y_col = df.columns[1]
+
+    # Create the line chart
+    plt.plot(df[x_col], df[y_col], marker=marker, linestyle=linestyle, color=color)
+
+    # Set labels and title
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.tight_layout()
+    plt.grid(True, alpha=0.3)
+
+    # Ensure filename has .png extension
+    if not filename.endswith(".png"):
+        filename += ".png"
+
+    # Save the chart to the output directory
+    output_path = os.path.join(output_dir, filename)
+    plt.savefig(output_path)
+    plt.close()
+
+    return output_path
+
+
 def get_sql_agent(
     user_id: Optional[str] = None,
     model_id: str = "openai:gpt-4o",
@@ -159,7 +366,13 @@ def get_sql_agent(
         # Enable the ability to read the tool call history
         read_tool_call_history=True,
         # Add tools to the agent
-        tools=[SQLTools(db_url=db_url), FileTools(base_dir=output_dir)],
+        tools=[
+            SQLTools(db_url=db_url),
+            FileTools(base_dir=output_dir),
+            create_bar_chart,
+            create_pie_chart,
+            create_line_chart,
+        ],
         add_history_to_messages=True,
         num_history_responses=3,
         debug_mode=debug_mode,
@@ -205,6 +418,10 @@ def get_sql_agent(
         14. Always show the user the SQL you ran to get the answer.
         15. Continue till you have accomplished the task.
         16. Show results as a table or a chart if possible.
+            - For numerical data that can be compared, use the `create_bar_chart` or `create_line_chart` function.
+            - For data showing composition or distribution, use the `create_pie_chart` function.
+            - Always provide proper titles, labels and filename for the charts.
+            - Display the chart by including the file path in your response using markdown image syntax: ![Chart Title](file path)
 
         After finishing your task, ask the user relevant followup questions like "was the result okay, would you like me to fix any problems?"
         If the user says yes, get the previous query using the `get_tool_call_history(num_calls=3)` function and fix the problems.
@@ -218,6 +435,7 @@ def get_sql_agent(
         - Make sure your query accounts for duplicate records.
         - Make sure your query accounts for null values.
         - If you run a query, explain why you ran it.
+        - For numerical results, consider creating visualizations using the chart creation tools.
         - **NEVER, EVER RUN CODE TO DELETE DATA OR ABUSE THE LOCAL SYSTEM**
         - ALWAYS FOLLOW THE `table rules` if provided. NEVER IGNORE THEM.
         </rules>\

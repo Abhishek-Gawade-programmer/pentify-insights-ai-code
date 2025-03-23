@@ -1,4 +1,6 @@
 from typing import Any, Dict, List, Optional
+import os
+import json
 
 import streamlit as st
 from agents import get_sql_agent
@@ -54,40 +56,49 @@ def export_chat_history():
     return ""
 
 
-def display_tool_calls(tool_calls_container, tools):
-    """Display tool calls in a streamlit container with expandable sections.
+def display_tool_calls(container, tool_calls):
+    """Display tool calls output in Streamlit UI"""
+    if not tool_calls:
+        return
 
-    Args:
-        tool_calls_container: Streamlit container to display the tool calls
-        tools: List of tool call dictionaries containing name, args, content, and metrics
-    """
-    with tool_calls_container.container():
-        for tool_call in tools:
-            _tool_name = tool_call.get("tool_name")
-            _tool_args = tool_call.get("tool_args")
-            _content = tool_call.get("content")
-            _metrics = tool_call.get("metrics")
+    markdown_text = []
+    for tool_call in tool_calls:
+        markdown_text.append(f"**Tool Call:** `{tool_call.name}`")
 
-            with st.expander(
-                f"🛠️ {_tool_name.replace('_', ' ').title()}", expanded=False
+        # Special handling for chart tools that return image paths
+        if tool_call.name in [
+            "create_bar_chart",
+            "create_pie_chart",
+            "create_line_chart",
+        ]:
+            result = tool_call.output
+            # If the output is a path to an image, display the image
+            if (
+                isinstance(result, str)
+                and result.endswith(".png")
+                and os.path.exists(result)
             ):
-                if isinstance(_tool_args, dict) and "query" in _tool_args:
-                    st.code(_tool_args["query"], language="sql")
+                markdown_text.append(f"![Chart]({result})")
+        else:
+            # For other tool calls, just display the output
+            result = tool_call.output
+            if isinstance(result, (dict, list)):
+                # For dictionaries and lists, format as JSON
+                result = f"```json\n{json.dumps(result, indent=2)}\n```"
+            elif isinstance(result, str) and (
+                result.startswith("{") or result.startswith("[")
+            ):
+                # Try to parse as JSON for better formatting
+                try:
+                    parsed = json.loads(result)
+                    result = f"```json\n{json.dumps(parsed, indent=2)}\n```"
+                except:
+                    # If parsing fails, display as is
+                    pass
 
-                if _tool_args and _tool_args != {"query": None}:
-                    st.markdown("**Arguments:**")
-                    st.json(_tool_args)
+            markdown_text.append(result)
 
-                if _content:
-                    st.markdown("**Results:**")
-                    try:
-                        st.json(_content)
-                    except Exception as e:
-                        st.markdown(_content)
-
-                if _metrics:
-                    st.markdown("**Metrics:**")
-                    st.json(_metrics)
+    container.markdown("\n\n".join(markdown_text))
 
 
 def sidebar_widget() -> None:
