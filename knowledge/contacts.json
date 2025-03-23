@@ -1,0 +1,146 @@
+{
+  "table_name": "contacts",
+  "table_description": "Contains details of individual contacts including personal data, addresses, and related company information.",
+  "table_columns": [
+    {
+      "name": "address_city",
+      "type": "character varying",
+      "description": "City of the contact's address."
+    },
+    {
+      "name": "address_contacts_addresses_id",
+      "type": "integer",
+      "description": "Reference ID for the contact's address record."
+    },
+    {
+      "name": "address_country",
+      "type": "character varying",
+      "description": "Country of the contact's address."
+    },
+    {
+      "name": "address_county",
+      "type": "character varying",
+      "description": "County of the contact's address."
+    },
+    {
+      "name": "address_full_address",
+      "type": "text",
+      "description": "Full address information of the contact."
+    },
+    {
+      "name": "address_municipality",
+      "type": "character varying",
+      "description": "Municipality of the contact's address."
+    },
+    {
+      "name": "address_street",
+      "type": "text",
+      "description": "Street information for the contact's address."
+    },
+    {
+      "name": "address_zipcode",
+      "type": "character varying",
+      "description": "Zip or postal code for the contact's address."
+    },
+    {
+      "name": "contact_id",
+      "type": "character varying",
+      "description": "treat this column as primary key like 'id' for table. Unique identifier for the contact."
+    },
+    {
+      "name": "contact_type",
+      "type": "character varying",
+      "description": "Type/category of the contact."
+    },
+    {
+      "name": "created_date",
+      "type": "timestamp",
+      "description": "Timestamp when the contact record was created."
+    },
+    {
+      "name": "email",
+      "type": "character varying",
+      "description": "Email address of the contact."
+    },
+    {
+      "name": "email_for_invoice",
+      "type": "character varying",
+      "description": "Email address used for invoicing purposes."
+    },
+    {
+      "name": "is_client",
+      "type": "integer",
+      "description": "Indicator if the contact is associated with a client."
+    },
+    {
+      "name": "lastname",
+      "type": "character varying",
+      "description": "Last name of the contact."
+    },
+    {
+      "name": "manager_email",
+      "type": "character varying",
+      "description": "Email address of the contact's manager."
+    },
+    {
+      "name": "manager_id",
+      "type": "character varying",
+      "description": "Identifier for the contact's manager."
+    },
+    {
+      "name": "mobile",
+      "type": "character varying",
+      "description": "Mobile phone number of the contact."
+    },
+    {
+      "name": "modified_date",
+      "type": "timestamp",
+      "description": "Timestamp when the contact record was last modified."
+    },
+    {
+      "name": "name",
+      "type": "character varying",
+      "description": "First name of the contact."
+    },
+    {
+      "name": "phone",
+      "type": "character varying",
+      "description": "Primary phone number of the contact."
+    },
+    {
+      "name": "position",
+      "type": "character varying",
+      "description": "Job position or role of the contact."
+    },
+    {
+      "name": "related_company_id",
+      "type": "character varying",
+      "description": "Identifier of the company related to the contact."
+    },
+    {
+      "name": "related_company_name",
+      "type": "character varying",
+      "description": "Name of the company associated with the contact."
+    },
+    {
+      "name": "search_name",
+      "type": "character varying",
+      "description": "Alternate or searchable name/alias for the contact."
+    },
+    {
+      "name": "timezone",
+      "type": "character varying",
+      "description": "Timezone information relevant to the contact."
+    },
+    {
+      "name": "vat_no",
+      "type": "character varying",
+      "description": "VAT number associated with the contact, if applicable."
+    },
+    {
+      "name": "website",
+      "type": "character varying",
+      "description": "Website URL related to the contact or their company."
+    }
+  ]
+}

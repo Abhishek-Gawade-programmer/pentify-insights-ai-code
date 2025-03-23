@@ -1,0 +1,186 @@
+{
+  "table_name": "invoices",
+  "table_description": "Captures invoice details including financial figures, dates, statuses, and associated company information.",
+  "table_columns": [
+    {
+      "name": "account_id",
+      "type": "text",
+      "description": "Identifier for the account associated with the invoice."
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "description": "Identifier for the company to which the invoice is issued."
+    },
+    {
+      "name": "company_name",
+      "type": "text",
+      "description": "Name of the company in the invoice."
+    },
+    {
+      "name": "created_date",
+      "type": "text",
+      "description": "Timestamp when the invoice record was created."
+    },
+    {
+      "name": "credited_invoices",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "currency",
+      "type": "text",
+      "description": "Currency code for the invoice amounts."
+    },
+    {
+      "name": "date",
+      "type": "text",
+      "description": "The date when the invoice was issued."
+    },
+    {
+      "name": "deadline",
+      "type": "text",
+      "description": "Due date for the invoice payment."
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "description": "Description or additional details about the invoice."
+    },
+    {
+      "name": "generation_type",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Unique identifier for the invoice."
+    },
+    {
+      "name": "invoice_no",
+      "type": "double precision",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "is_role_based",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "local_price_list_id",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "modified_date",
+      "type": "text",
+      "description": "Timestamp when the invoice record was last modified."
+    },
+    {
+      "name": "no",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "order_id",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "owner_email",
+      "type": "text",
+      "description": "Email address of the invoice owner."
+    },
+    {
+      "name": "owner_id",
+      "type": "bigint",
+      "description": "Identifier for the invoice owner."
+    },
+    {
+      "name": "paid_sum",
+      "type": "double precision",
+      "description": "Amount that has been paid against this invoice."
+    },
+    {
+      "name": "pay_now_link",
+      "type": "text",
+      "description": "URL or link for immediate payment of the invoice."
+    },
+    {
+      "name": "payment_fee",
+      "type": "bigint",
+      "description": "Fee associated with the payment processing."
+    },
+    {
+      "name": "payment_type",
+      "type": "text",
+      "description": "Method or type of payment for this invoice."
+    },
+    {
+      "name": "person_id",
+      "type": "bigint",
+      "description": "Identifier for the contact associated with the invoice."
+    },
+    {
+      "name": "person_name",
+      "type": "text",
+      "description": "Name of the contact related to the invoice."
+    },
+    {
+      "name": "prepayment_id",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "prepayment_sum",
+      "type": "double precision",
+      "description": "Amount that was prepaid for this invoice."
+    },
+    {
+      "name": "real_estate_id",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "receivable_sum",
+      "type": "double precision",
+      "description": "Amount still to be received for this invoice. important column for query"
+    },
+    {
+      "name": "reference_no",
+      "type": "double precision",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "scheduled_invoice_id",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "status",
+      "type": "text",
+      "description": "Current status of the invoice (e.g., paid, unpaid, overdue). important column for query"
+    },
+    {
+      "name": "sum",
+      "type": "double precision",
+      "description": "Total sum or amount of the invoice before taxes This is a very important column for calculating revenue."
+    },
+    {
+      "name": "total_sum",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "vat_sum",
+      "type": "double precision",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "_weld_synced",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    }
+  ]
+}

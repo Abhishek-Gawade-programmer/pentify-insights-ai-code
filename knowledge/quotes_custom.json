@@ -1,0 +1,41 @@
+{
+  "table_name": "quotes_custom",
+  "table_description": "Stores custom fields and values associated with quotes, allowing for flexible and extensible quote data.",
+  "table_columns": [
+    {
+      "name": "id",
+      "type": "text",
+      "description": "treat this column as primary key like 'id' for table"
+    },
+    {
+      "name": "name",
+      "type": "text",
+      "description": "Name or label of the custom field. this is important column"
+    },
+    {
+      "name": "quote_id",
+      "type": "bigint",
+      "description": "Reference to the quote.id foreign key here referance to quotes table"
+    },
+    {
+      "name": "quotes_custom_id",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "type",
+      "type": "text",
+      "description": "Data type or category of the custom field (e.g., text, number, date)."
+    },
+    {
+      "name": "value",
+      "type": "text",
+      "description": "The actual value stored in the custom field. VERY IMPORTANT "
+    },
+    {
+      "name": "_weld_synced",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    }
+  ]
+}

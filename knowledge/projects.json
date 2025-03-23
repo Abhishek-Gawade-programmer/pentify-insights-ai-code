@@ -1,0 +1,121 @@
+{
+  "table_name": "projects",
+  "table_description": "Holds project information including budgets, deadlines, descriptions, and links to companies and personnel.",
+  "table_columns": [
+    {
+      "name": "account_id",
+      "type": "character varying",
+      "description": "Identifier for the account associated with the project."
+    },
+    {
+      "name": "budget_type",
+      "type": "character varying",
+      "description": "Specifies the type of budget for the project."
+    },
+    {
+      "name": "color",
+      "type": "character varying",
+      "description": "Color code or label associated with the project."
+    },
+    {
+      "name": "company_id",
+      "type": "integer",
+      "description": "Identifier for the company linked to the project."
+    },
+    {
+      "name": "company_name",
+      "type": "character varying",
+      "description": "Name of the company associated with the project."
+    },
+    {
+      "name": "currency",
+      "type": "character varying",
+      "description": "Currency code used for the project budget and financials."
+    },
+    {
+      "name": "date",
+      "type": "date",
+      "description": "Date associated with the project record (e.g., start date)."
+    },
+    {
+      "name": "deadline",
+      "type": "date",
+      "description": "Deadline or due date for the project."
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "description": "Detailed description of the project."
+    },
+    {
+      "name": "duration",
+      "type": "interval",
+      "description": "Duration or time span for the project."
+    },
+    {
+      "name": "id",
+      "type": "integer",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "is_private",
+      "type": "integer",
+      "description": "Indicator if the project is private (e.g., 1 for private, 0 for public)."
+    },
+    {
+      "name": "is_role_based",
+      "type": "integer",
+      "description": "Indicates if project access is role-based."
+    },
+    {
+      "name": "manager_email",
+      "type": "character varying",
+      "description": "Email address of the project manager."
+    },
+    {
+      "name": "manager_id",
+      "type": "integer",
+      "description": "Identifier for the project manager."
+    },
+    {
+      "name": "modified_date",
+      "type": "timestamp",
+      "description": "Timestamp when the project record was last modified."
+    },
+    {
+      "name": "no",
+      "type": "character varying",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "owner_email",
+      "type": "character varying",
+      "description": "Email address of the project owner."
+    },
+    {
+      "name": "person_id",
+      "type": "integer",
+      "description": "Identifier for the contact associated with the project.VERY IMPORTANT: treat this column as primary key like 'id' for table."
+    },
+    {
+      "name": "person_name",
+      "type": "character varying",
+      "description": "Name of the contact associated with the project."
+    },
+    {
+      "name": "status",
+      "type": "character varying",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "status_name",
+      "type": "character varying",
+      "description": "Descriptive name of the project status."
+    },
+    {
+      "name": "project_name",
+      "type": "character varying",
+      "description": "Name or title of the project."
+    }
+  ]
+}

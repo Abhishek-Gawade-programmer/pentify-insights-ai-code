@@ -1,0 +1,216 @@
+{
+  "table_name": "quotes",
+  "table_description": "Captures quote details including financial figures, dates, statuses, and associated project and company information.",
+  "table_columns": [
+    {
+      "name": "account_id",
+      "type": "character varying",
+      "description": "Identifier for the account associated with the quote."
+    },
+    {
+      "name": "company_address_city",
+      "type": "character varying",
+      "description": "City part of the company's address in the quote."
+    },
+    {
+      "name": "company_address_country",
+      "type": "character varying",
+      "description": "Country part of the company's address in the quote."
+    },
+    {
+      "name": "company_address_county",
+      "type": "character varying",
+      "description": "County part of the company's address in the quote."
+    },
+    {
+      "name": "company_address_full_address",
+      "type": "text",
+      "description": "Full address of the company as captured in the quote."
+    },
+    {
+      "name": "company_address_municipality",
+      "type": "character varying",
+      "description": "Municipality of the company's address in the quote."
+    },
+    {
+      "name": "company_address_street",
+      "type": "text",
+      "description": "Street details of the company's address in the quote."
+    },
+    {
+      "name": "company_address_zipcode",
+      "type": "character varying",
+      "description": "Zip or postal code for the company's address in the quote."
+    },
+    {
+      "name": "company_address_id",
+      "type": "integer",
+      "description": "Identifier for the company address record associated with the quote."
+    },
+    {
+      "name": "company_id",
+      "type": "integer",
+      "description": "Identifier for the company to which the quote is issued."
+    },
+    {
+      "name": "company_name",
+      "type": "character varying",
+      "description": "Name of the company in the quote."
+    },
+    {
+      "name": "confirmed_date",
+      "type": "timestamp",
+      "description": "Date and time when the quote was confirmed."
+    },
+    {
+      "name": "created_date",
+      "type": "timestamp",
+      "description": "Timestamp when the quote record was created."
+    },
+    {
+      "name": "currency",
+      "type": "character varying",
+      "description": "Currency code for the quote amounts."
+    },
+    {
+      "name": "currency_rate",
+      "type": "double precision",
+      "description": "Exchange rate for the currency used in the quote."
+    },
+    {
+      "name": "date",
+      "type": "date",
+      "description": "The date when the quote was issued."
+    },
+    {
+      "name": "deadline",
+      "type": "timestamp",
+      "description": "Deadline date and time for the quote's validity."
+    },
+    {
+      "name": "deleted_date",
+      "type": "timestamp",
+      "description": "Date and time when the quote was marked as deleted, if applicable."
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "description": "Description or additional details about the quote."
+    },
+    {
+      "name": "discount",
+      "type": "numeric",
+      "description": "Primary discount value applied to the quote."
+    },
+    {
+      "name": "discount2",
+      "type": "numeric",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "discount3",
+      "type": "numeric",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "estimated_closing_date",
+      "type": "date",
+      "description": "Estimated date when the quote may be closed or finalized."
+    },
+    {
+      "name": "estimated_duration",
+      "type": "integer",
+      "description": "Estimated duration (in days or relevant unit) related to the quote's project."
+    },
+    {
+      "name": "id",
+      "type": "integer",
+      "description": "Unique identifier for the quote."
+    },
+    {
+      "name": "is_deleted",
+      "type": "integer",
+      "description": "Indicator if the quote has been deleted (e.g., 1 for deleted, 0 for active)."
+    },
+    {
+      "name": "is_role_based",
+      "type": "integer",
+      "description": "Indicates if the quote access or visibility is role based."
+    },
+    {
+      "name": "is_sent",
+      "type": "integer",
+      "description": "Indicator if the quote has been sent (e.g., 1 for sent, 0 for not sent)."
+    },
+    {
+      "name": "local_price_list_id",
+      "type": "integer",
+      "description": "Identifier for the local price list associated with the quote."
+    },
+    {
+      "name": "modified_date",
+      "type": "timestamp",
+      "description": "Timestamp when the quote record was last modified."
+    },
+    {
+      "name": "no",
+      "type": "character varying",
+      "description": "Quote number or code."
+    },
+    {
+      "name": "owner_email",
+      "type": "character varying",
+      "description": "Email address of the quote owner."
+    },
+    {
+      "name": "owner_id",
+      "type": "integer",
+      "description": "Identifier for the quote owner."
+    },
+    {
+      "name": "person_id",
+      "type": "integer",
+      "description": "Identifier for the contact associated with the quote."
+    },
+    {
+      "name": "person_name",
+      "type": "character varying",
+      "description": "Name of the contact related to the quote."
+    },
+    {
+      "name": "project_id",
+      "type": "integer",
+      "description": "Identifier for the project linked to the quote."
+    },
+    {
+      "name": "project_name",
+      "type": "character varying",
+      "description": "Name of the project associated with the quote."
+    },
+    {
+      "name": "quote_name",
+      "type": "character varying",
+      "description": "Descriptive name or title for the quote."
+    },
+    {
+      "name": "status",
+      "type": "character varying",
+      "description": "Status code representing the current state of the quote."
+    },
+    {
+      "name": "status_name",
+      "type": "character varying",
+      "description": "Descriptive name of the quote status."
+    },
+    {
+      "name": "sum",
+      "type": "numeric",
+      "description": "Total sum or amount of the quote before taxes or discounts. This very important column  we can use this to calculate revenue for the company."
+    },
+    {
+      "name": "vat_sum",
+      "type": "numeric",
+      "description": "Total VAT amount applied to the quote."
+    }
+  ]
+}

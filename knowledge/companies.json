@@ -1,0 +1,136 @@
+{
+  "table_name": "companies",
+  "table_description": "Stores company details including addresses, contact information, and client status.",
+  "table_columns": [
+    {
+      "name": "address_city",
+      "type": "character varying",
+      "description": "City of the company's address."
+    },
+    {
+      "name": "address_contacts_addresses_id",
+      "type": "integer",
+      "description": "DON'T USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "address_country",
+      "type": "character varying",
+      "description": "Country of the company's address."
+    },
+    {
+      "name": "address_county",
+      "type": "character varying",
+      "description": "County of the company's address."
+    },
+    {
+      "name": "address_full_address",
+      "type": "text",
+      "description": "Complete address details for the company."
+    },
+    {
+      "name": "address_municipality",
+      "type": "character varying",
+      "description": "Municipality where the company is located."
+    },
+    {
+      "name": "address_street",
+      "type": "text",
+      "description": "Street address of the company."
+    },
+    {
+      "name": "address_zipcode",
+      "type": "character varying",
+      "description": "Zip or postal code for the company's address."
+    },
+    {
+      "name": "contact_id",
+      "type": "character varying",
+      "description": "treat this column as primary key like 'id' for table. Primary contact identifier associated with the company."
+    },
+    {
+      "name": "contact_type",
+      "type": "character varying",
+      "description": "Specifies the type/category of the contact."
+    },
+    {
+      "name": "created_date",
+      "type": "timestamp",
+      "description": "Date and time when the company record was created."
+    },
+    {
+      "name": "email",
+      "type": "character varying",
+      "description": "Primary email address of the company."
+    },
+    {
+      "name": "email_for_invoice",
+      "type": "character varying",
+      "description": "Email address used specifically for invoicing."
+    },
+    {
+      "name": "is_client",
+      "type": "integer",
+      "description": "Indicator if the company is a client (e.g., 1 for client, 0 for non-client)."
+    },
+    {
+      "name": "lastname",
+      "type": "character varying",
+      "description": "Last name of the company representative or primary contact."
+    },
+    {
+      "name": "manager_email",
+      "type": "character varying",
+      "description": "Email address of the company manager."
+    },
+    {
+      "name": "manager_id",
+      "type": "character varying",
+      "description": "Identifier for the company manager."
+    },
+    {
+      "name": "mobile",
+      "type": "character varying",
+      "description": "Mobile phone number associated with the company or its contact."
+    },
+    {
+      "name": "modified_date",
+      "type": "timestamp",
+      "description": "Date and time when the company record was last modified."
+    },
+    {
+      "name": "name",
+      "type": "character varying",
+      "description": "Name of the company."
+    },
+    {
+      "name": "phone",
+      "type": "character varying",
+      "description": "Primary phone number of the company."
+    },
+    {
+      "name": "position",
+      "type": "character varying",
+      "description": "Job position related to the contact or the role within the company."
+    },
+    {
+      "name": "search_name",
+      "type": "character varying",
+      "description": "Alternate or searchable name/alias for the company."
+    },
+    {
+      "name": "timezone",
+      "type": "character varying",
+      "description": "Timezone corresponding to the company's location."
+    },
+    {
+      "name": "vat_no",
+      "type": "character varying",
+      "description": "VAT identification number for the company."
+    },
+    {
+      "name": "website",
+      "type": "character varying",
+      "description": "URL of the company's website."
+    }
+  ]
+}
