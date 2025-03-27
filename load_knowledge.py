@@ -3,9 +3,9 @@ from agno.utils.log import logger
 
 
 def load_knowledge(recreate: bool = True):
-    logger.info("Loading SQL agent knowledge.")
+    logger.info("Loading Collaborate Global knowledge base.")
     agent_knowledge.load(recreate=recreate)
-    logger.info("SQL agent knowledge loaded.")
+    logger.info("Collaborate Global knowledge base loaded.")
 
 
 if __name__ == "__main__":

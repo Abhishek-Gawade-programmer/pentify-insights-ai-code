@@ -48,9 +48,9 @@ def restart_agent():
 def export_chat_history():
     """Export chat history as markdown"""
     if "messages" in st.session_state:
-        chat_text = "# F1 SQL Agent - Chat History\n\n"
+        chat_text = "# Collaborate Global Insights - Chat History\n\n"
         for msg in st.session_state["messages"]:
-            role = "🤖 Assistant" if msg["role"] == "agent" else "👤 User"
+            role = "💼 Assistant" if msg["role"] == "agent" else "👤 User"
             chat_text += f"### {role}\n{msg['content']}\n\n"
         return chat_text
     return ""
@@ -61,79 +61,82 @@ def display_tool_calls(container, tool_calls):
     if not tool_calls:
         return
 
-    markdown_text = []
     for tool_call in tool_calls:
-        markdown_text.append(f"**Tool Call:** `{tool_call.name}`")
+        tool_name = tool_call.get("tool_name")
+        with container.container():
+            st.markdown(f"**Tool Call:** `{tool_name}`")
 
-        # Special handling for chart tools that return image paths
-        if tool_call.name in [
-            "create_bar_chart",
-            "create_pie_chart",
-            "create_line_chart",
-        ]:
-            result = tool_call.output
-            # If the output is a path to an image, display the image
-            if (
-                isinstance(result, str)
-                and result.endswith(".png")
-                and os.path.exists(result)
-            ):
-                markdown_text.append(f"![Chart]({result})")
-        else:
-            # For other tool calls, just display the output
-            result = tool_call.output
-            if isinstance(result, (dict, list)):
-                # For dictionaries and lists, format as JSON
-                result = f"```json\n{json.dumps(result, indent=2)}\n```"
-            elif isinstance(result, str) and (
-                result.startswith("{") or result.startswith("[")
-            ):
-                # Try to parse as JSON for better formatting
-                try:
-                    parsed = json.loads(result)
-                    result = f"```json\n{json.dumps(parsed, indent=2)}\n```"
-                except:
-                    # If parsing fails, display as is
-                    pass
-
-            markdown_text.append(result)
-
-    container.markdown("\n\n".join(markdown_text))
+            # Special handling for chart tools that return image paths
+            if tool_name in [
+                "create_bar_chart",
+                "create_pie_chart",
+                "create_line_chart",
+            ]:
+                result = tool_call.get("content")
+                # If the output is a path to an image, display the image using st.image
+                if (
+                    isinstance(result, str)
+                    and result.endswith(".png")
+                    and os.path.exists(result)
+                ):
+                    st.image(
+                        result,
+                        caption=os.path.basename(result),
+                        use_container_width=True,
+                    )
+            else:
+                # For other tool calls, just display the output
+                result = tool_call.get("content")
+                if isinstance(result, (dict, list)):
+                    # For dictionaries and lists, format as JSON
+                    st.json(result)
+                elif isinstance(result, str) and (
+                    result.startswith("{") or result.startswith("[")
+                ):
+                    # Try to parse as JSON for better formatting
+                    try:
+                        parsed = json.loads(result)
+                        st.json(parsed)
+                    except:
+                        # If parsing fails, display as is
+                        st.markdown(result)
+                else:
+                    st.markdown(result)
 
 
 def sidebar_widget() -> None:
     """Display a sidebar with sample user queries"""
     with st.sidebar:
         # Basic Information
-        st.markdown("#### 🏎️ Basic Information")
+        st.markdown("#### 📊 Database Information")
         if st.button("📋 Show Tables"):
             add_message("user", "Which tables do you have access to?")
         if st.button("ℹ️ Describe Tables"):
             add_message("user", "Tell me more about these tables.")
 
-        # Statistics
-        st.markdown("#### 🏆 Statistics")
-        if st.button("🥇 Most Race Wins"):
-            add_message("user", "Which driver has the most race wins?")
+        # Company Data
+        st.markdown("#### 🏢 Company Data")
+        if st.button("🔍 Company List"):
+            add_message("user", "List all companies in the database.")
 
-        if st.button("🏆 Constructor Champs"):
-            add_message("user", "Which team won the most Constructors Championships?")
+        if st.button("🌎 Companies by Country"):
+            add_message("user", "Show me the distribution of companies by country.")
 
-        if st.button("⏳ Longest Career"):
+        if st.button("📈 Client Analytics"):
             add_message(
                 "user",
-                "Tell me the name of the driver with the longest racing career? Also tell me when they started and when they retired.",
+                "How many companies are clients vs non-clients? Show me a breakdown.",
             )
 
-        # Analysis
-        st.markdown("#### 📊 Analysis")
-        if st.button("📈 Races per Year"):
-            add_message("user", "Show me the number of races per year.")
+        # Contact and Project Analysis
+        st.markdown("#### 👥 Contact & Project Analysis")
+        if st.button("📞 Contact Details"):
+            add_message("user", "Show me contact information for key companies.")
 
-        if st.button("🔍 Team Performance"):
+        if st.button("📁 Project Analysis"):
             add_message(
                 "user",
-                "Write a query to identify the drivers that won the most races per year from 2010 onwards and the position of their team that year.",
+                "Analyze all projects in the database and show me their status.",
             )
 
         # Utility buttons
@@ -146,12 +149,12 @@ def sidebar_widget() -> None:
             if st.download_button(
                 "💾 Export Chat",
                 export_chat_history(),
-                file_name="f1_chat_history.md",
+                file_name="collaborate_global_chat_history.md",
                 mime="text/markdown",
             ):
                 st.success("Chat history exported!")
 
-        if st.sidebar.button("🚀 Load Data & Knowledge"):
+        if st.sidebar.button("📚 Load Knowledge"):
             load_data_and_knowledge()
 
 
@@ -233,11 +236,12 @@ def about_widget() -> None:
     st.sidebar.markdown("### ℹ️ About")
     st.sidebar.markdown(
         """
-    This SQL Assistant helps you analyze Formula 1 data from 1950 to 2020 using natural language queries.
+    This SQL Assistant helps you analyze Collaborate Global's database using natural language queries.
 
     Built with:
     - 🚀 Agno
     - 💫 Streamlit
+    - 📊 Data from [Collaborate Global](https://www.collaborateglobal.com/)
     """
     )
 
@@ -247,7 +251,7 @@ CUSTOM_CSS = """
     /* Main Styles */
     .main-title {
         text-align: center;
-        background: linear-gradient(45deg, #FF4B2B, #FF416C);
+        background: linear-gradient(45deg, #2E5090, #4A7CC9);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 3em;
@@ -280,7 +284,7 @@ CUSTOM_CSS = """
         border-radius: 10px;
         padding: 1em;
         margin: 1em 0;
-        border-left: 4px solid #FF4B2B;
+        border-left: 4px solid #2E5090;
     }
     .status-message {
         padding: 1em;

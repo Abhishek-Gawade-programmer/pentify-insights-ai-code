@@ -326,6 +326,208 @@ def create_line_chart(
     return output_path
 
 
+def suggest_chart_type(data: Union[str, Dict[str, List[Any]]]) -> Dict[str, Any]:
+    """
+    Analyzes SQL query results and suggests appropriate chart type and configuration.
+
+    Args:
+        data: JSON string or dictionary containing the query results
+
+    Returns:
+        dict: A dictionary with chart suggestion including:
+            - chart_type: The recommended chart type ('bar', 'pie', 'line', or 'table')
+            - reason: Explanation for why this chart type was selected
+            - config: Suggested configuration parameters for the chart
+    """
+    # Convert data to DataFrame if it's a JSON string
+    if isinstance(data, str):
+        try:
+            data = json.loads(data)
+        except:
+            return {
+                "chart_type": "table",
+                "reason": "Could not parse data as JSON",
+                "config": {},
+            }
+
+    # Convert to DataFrame for analysis
+    try:
+        df = pd.DataFrame(data)
+    except:
+        return {
+            "chart_type": "table",
+            "reason": "Data could not be converted to DataFrame",
+            "config": {},
+        }
+
+    # If we don't have enough data for a chart
+    if len(df) < 2:
+        return {
+            "chart_type": "table",
+            "reason": "Not enough data points for visualization",
+            "config": {},
+        }
+
+    # If we don't have at least two columns for x/y values
+    if len(df.columns) < 2:
+        return {
+            "chart_type": "table",
+            "reason": "Need at least two columns for visualization",
+            "config": {},
+        }
+
+    # Get column types
+    numeric_cols = df.select_dtypes(include=["number"]).columns.tolist()
+    categorical_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+    date_cols = [
+        col for col in df.columns if pd.api.types.is_datetime64_any_dtype(df[col])
+    ]
+
+    # If no numeric columns, can't make a standard chart
+    if not numeric_cols:
+        return {
+            "chart_type": "table",
+            "reason": "No numeric data available for visualization",
+            "config": {},
+        }
+
+    # Choose appropriate chart based on data characteristics
+
+    # Case 1: Time series data - use line chart
+    if date_cols and numeric_cols:
+        return {
+            "chart_type": "line",
+            "reason": "Time series data detected - line chart is best for showing trends over time",
+            "config": {
+                "x_col": date_cols[0],
+                "y_col": numeric_cols[0],
+                "title": f"{numeric_cols[0]} over Time",
+                "x_label": date_cols[0],
+                "y_label": numeric_cols[0],
+            },
+        }
+
+    # Case 2: Distribution/proportion data with few categories (2-7) - use pie chart
+    if (
+        categorical_cols
+        and numeric_cols
+        and 2 <= len(df[categorical_cols[0]].unique()) <= 7
+    ):
+        return {
+            "chart_type": "pie",
+            "reason": "Distribution data with few categories - pie chart shows proportion effectively",
+            "config": {
+                "label_col": categorical_cols[0],
+                "value_col": numeric_cols[0],
+                "title": f"Distribution of {numeric_cols[0]} by {categorical_cols[0]}",
+            },
+        }
+
+    # Case 3: Categorical comparison - use bar chart
+    if categorical_cols and numeric_cols:
+        # Check if we need a horizontal bar chart (for long category names)
+        horizontal = max(len(str(x)) for x in df[categorical_cols[0]].unique()) > 10
+
+        return {
+            "chart_type": "bar",
+            "reason": "Categorical comparison data - bar chart is best for comparing values across categories",
+            "config": {
+                "x_col": categorical_cols[0],
+                "y_col": numeric_cols[0],
+                "title": f"{numeric_cols[0]} by {categorical_cols[0]}",
+                "x_label": categorical_cols[0],
+                "y_label": numeric_cols[0],
+                "horizontal": horizontal,
+                "sort_values": True,
+            },
+        }
+
+    # Default: use bar chart for generic numeric data
+    return {
+        "chart_type": "bar",
+        "reason": "Generic numeric data - bar chart is a safe default visualization",
+        "config": {
+            "x_col": df.columns[0],
+            "y_col": numeric_cols[0],
+            "title": f"{numeric_cols[0]} Analysis",
+            "x_label": df.columns[0],
+            "y_label": numeric_cols[0],
+        },
+    }
+
+
+def visualize_sql_results(
+    data: Union[str, Dict[str, List[Any]]],
+    chart_type: Optional[str] = None,
+    title: Optional[str] = None,
+    **kwargs,
+) -> str:
+    """
+    Helper function to visualize SQL query results with the most appropriate chart type.
+
+    Args:
+        data: JSON string or dictionary containing the query results
+        chart_type: Optional chart type to override automatic detection ('bar', 'pie', 'line')
+        title: Optional chart title
+        **kwargs: Additional parameters to pass to the chart creation function
+
+    Returns:
+        str: Path to the saved chart image or explanation why visualization couldn't be created
+    """
+    # If chart_type is not specified, suggest one based on the data
+    if not chart_type:
+        suggestion = suggest_chart_type(data)
+        chart_type = suggestion["chart_type"]
+
+        # Use suggested config if not provided in kwargs
+        for key, value in suggestion["config"].items():
+            if key not in kwargs:
+                kwargs[key] = value
+
+        # Use suggested title if not provided
+        if not title and "title" in suggestion["config"]:
+            title = suggestion["config"]["title"]
+
+    # Ensure we have a chart title
+    if not title:
+        title = "Data Visualization"
+
+    # Create the appropriate chart based on chart_type
+    if chart_type == "bar":
+        return create_bar_chart(
+            data=data,
+            title=title,
+            x_label=kwargs.get("x_label", "Category"),
+            y_label=kwargs.get("y_label", "Value"),
+            filename=kwargs.get("filename", "sql_bar_chart.png"),
+            color=kwargs.get("color", "blue"),
+            horizontal=kwargs.get("horizontal", False),
+            sort_values=kwargs.get("sort_values", False),
+        )
+    elif chart_type == "pie":
+        return create_pie_chart(
+            data=data,
+            title=title,
+            filename=kwargs.get("filename", "sql_pie_chart.png"),
+            colors=kwargs.get("colors", None),
+            explode=kwargs.get("explode", None),
+            autopct=kwargs.get("autopct", "%1.1f%%"),
+        )
+    elif chart_type == "line":
+        return create_line_chart(
+            data=data,
+            title=title,
+            x_label=kwargs.get("x_label", "X Axis"),
+            y_label=kwargs.get("y_label", "Y Axis"),
+            filename=kwargs.get("filename", "sql_line_chart.png"),
+            color=kwargs.get("color", "blue"),
+            marker=kwargs.get("marker", "o"),
+            linestyle=kwargs.get("linestyle", "-"),
+        )
+    else:
+        return "No appropriate visualization could be created for this data"
+
+
 def get_sql_agent(
     user_id: Optional[str] = None,
     model_id: str = "openai:gpt-4o",
@@ -372,9 +574,11 @@ def get_sql_agent(
             create_bar_chart,
             create_pie_chart,
             create_line_chart,
+            visualize_sql_results,  # Add the new helper function
         ],
         add_history_to_messages=True,
         num_history_responses=3,
+        add_datetime_to_instructions=True,
         debug_mode=debug_mode,
         description=dedent(
             """\
@@ -417,11 +621,18 @@ def get_sql_agent(
         13. After you run the query, analyse the results and return the answer in markdown format.
         14. Always show the user the SQL you ran to get the answer.
         15. Continue till you have accomplished the task.
-        16. Show results as a table or a chart if possible.
-            - For numerical data that can be compared, use the `create_bar_chart` or `create_line_chart` function.
-            - For data showing composition or distribution, use the `create_pie_chart` function.
-            - Always provide proper titles, labels and filename for the charts.
-            - Display the chart by including the file path in your response using markdown image syntax: ![Chart Title](file path)
+        16. ALWAYS visualize numerical results with charts using one of these methods:
+            a. Use the `visualize_sql_results` function to automatically create the most appropriate chart type for the data.
+               Example: visualize_sql_results(data=query_result, title="My Chart Title")
+            
+            b. Or for more control, use one of these specific chart functions:
+               - `create_bar_chart` for comparing values across categories
+               - `create_pie_chart` for showing composition or distribution of data
+               - `create_line_chart` for showing trends over time
+               
+            c. NEVER just display raw tabular results without a visualization when the data is suitable for charts
+            
+            d. Make sure to include descriptive titles and labels for all charts
 
         After finishing your task, ask the user relevant followup questions like "was the result okay, would you like me to fix any problems?"
         If the user says yes, get the previous query using the `get_tool_call_history(num_calls=3)` function and fix the problems.
@@ -435,7 +646,8 @@ def get_sql_agent(
         - Make sure your query accounts for duplicate records.
         - Make sure your query accounts for null values.
         - If you run a query, explain why you ran it.
-        - For numerical results, consider creating visualizations using the chart creation tools.
+        - For numerical results, ALWAYS create visualizations using `visualize_sql_results` or the specific chart creation tools.
+        - NEVER return query results without visualization if they are suitable for charts.
         - **NEVER, EVER RUN CODE TO DELETE DATA OR ABUSE THE LOCAL SYSTEM**
         - ALWAYS FOLLOW THE `table rules` if provided. NEVER IGNORE THEM.
         </rules>\

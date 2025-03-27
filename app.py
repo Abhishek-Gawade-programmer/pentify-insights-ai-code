@@ -18,8 +18,8 @@ nest_asyncio.apply()
 
 # Page configuration
 st.set_page_config(
-    page_title="F1 SQL Agent",
-    page_icon=":checkered_flag:",
+    page_title="Collaborate Global Insights",
+    page_icon=":briefcase:",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -32,9 +32,12 @@ def main() -> None:
     ####################################################################
     # App header
     ####################################################################
-    st.markdown("<h1 class='main-title'>F1 SQL Agent</h1>", unsafe_allow_html=True)
     st.markdown(
-        "<p class='subtitle'>Your intelligent F1 data analyst powered by Agno</p>",
+        "<h1 class='main-title'>Collaborate Global Insights</h1>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        "<p class='subtitle'>Your intelligent business data analyst </p>",
         unsafe_allow_html=True,
     )
 
@@ -103,7 +106,7 @@ def main() -> None:
     ####################################################################
     # Get user input
     ####################################################################
-    if prompt := st.chat_input("👋 Ask me about F1 data from 1950 to 2020!"):
+    if prompt := st.chat_input("👋 Ask me about Collaborate Global's database!"):
         add_message("user", prompt)
 
     ####################################################################
