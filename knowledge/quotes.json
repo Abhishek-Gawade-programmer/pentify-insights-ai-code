@@ -205,7 +205,7 @@
     {
       "name": "sum",
       "type": "numeric",
-      "description": "Total sum or amount of the quote before taxes or discounts."
+      "description": "Total sum or amount of the quote before taxes or discounts. This very important column  we can use this to calculate revenue for the company."
     },
     {
       "name": "vat_sum",
