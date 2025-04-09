@@ -70,7 +70,7 @@
     {
       "name": "id_code",
       "type": "character varying",
-      "description": "Unique identification code for the company."
+      "description": "Unique identification code for the company. use this to identify the company in the database. you can use this to search for the company in the database. with company_id"
     },
     {
       "name": "is_client",
