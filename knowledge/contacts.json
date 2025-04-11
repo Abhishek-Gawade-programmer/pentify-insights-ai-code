@@ -68,11 +68,6 @@
       "description": "Email address used for invoicing purposes."
     },
     {
-      "name": "id_code",
-      "type": "character varying",
-      "description": "Unique identification code for the contact."
-    },
-    {
       "name": "is_client",
       "type": "integer",
       "description": "Indicator if the contact is associated with a client."

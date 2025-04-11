@@ -170,12 +170,12 @@
     {
       "name": "person_id",
       "type": "integer",
-      "description": "Identifier for the person associated with the quote."
+      "description": "Identifier for the contact associated with the quote."
     },
     {
       "name": "person_name",
       "type": "character varying",
-      "description": "Name of the person related to the quote."
+      "description": "Name of the contact related to the quote."
     },
     {
       "name": "project_id",

@@ -95,12 +95,12 @@
     {
       "name": "person_id",
       "type": "integer",
-      "description": "Identifier for the person associated with the project."
+      "description": "Identifier for the contact associated with the project."
     },
     {
       "name": "person_name",
       "type": "character varying",
-      "description": "Name of the person associated with the project."
+      "description": "Name of the contact associated with the project."
     },
     {
       "name": "status",
