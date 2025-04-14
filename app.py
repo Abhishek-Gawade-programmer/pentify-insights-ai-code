@@ -12,6 +12,8 @@ from utils import (
     session_selector_widget,
     sidebar_widget,
 )
+import uuid
+import asyncio
 
 
 nest_asyncio.apply()
@@ -60,24 +62,28 @@ def main() -> None:
     ####################################################################
     # Initialize Agent
     ####################################################################
-    sql_agent: Agent
+    user_id = str(uuid.uuid4())
+    session_id = str(uuid.uuid4())
+
     if (
         "sql_agent" not in st.session_state
         or st.session_state["sql_agent"] is None
         or st.session_state.get("current_model") != model_id
     ):
         logger.info("---*--- Creating new SQL agent ---*---")
-        sql_agent = get_sql_agent(model_id=model_id)
-        st.session_state["sql_agent"] = sql_agent
+        st.session_state["sql_agent"] = True
         st.session_state["current_model"] = model_id
+        st.session_state["user_id"] = user_id
+        st.session_state["session_id"] = session_id
     else:
-        sql_agent = st.session_state["sql_agent"]
+        user_id = st.session_state["user_id"]
+        session_id = st.session_state["session_id"]
 
     ####################################################################
     # Load Agent Session from the database
     ####################################################################
     try:
-        st.session_state["sql_agent_session_id"] = sql_agent.load_session()
+        st.session_state["sql_agent_session_id"] = session_id
     except Exception:
         st.warning("Could not create Agent session, is the database running?")
         return
@@ -85,17 +91,30 @@ def main() -> None:
     ####################################################################
     # Load runs from memory
     ####################################################################
-    agent_runs = sql_agent.memory.runs
-    if len(agent_runs) > 0:
-        logger.debug("Loading run history")
-        st.session_state["messages"] = []
-        for _run in agent_runs:
-            if _run.message is not None:
-                add_message(_run.message.role, _run.message.content)
-            if _run.response is not None:
-                add_message("assistant", _run.response.content, _run.response.tools)
-    else:
-        logger.debug("No run history found")
+    try:
+        # Get a temporary agent to access the memory
+        temp_agent = asyncio.run(
+            get_sql_agent(
+                user_id=user_id,
+                session_id=session_id,
+                model_id=model_id,
+            )
+        )
+        agent_runs = temp_agent.memory.runs if hasattr(temp_agent, "memory") else []
+
+        if len(agent_runs) > 0:
+            logger.debug("Loading run history")
+            st.session_state["messages"] = []
+            for _run in agent_runs:
+                if _run.message is not None:
+                    add_message(_run.message.role, _run.message.content)
+                if _run.response is not None:
+                    add_message("assistant", _run.response.content, _run.response.tools)
+        else:
+            logger.debug("No run history found")
+            st.session_state["messages"] = []
+    except Exception as e:
+        logger.error(f"Error loading run history: {str(e)}")
         st.session_state["messages"] = []
 
     ####################################################################
@@ -137,19 +156,21 @@ def main() -> None:
             with st.spinner("🤔 Thinking..."):
                 response = ""
                 try:
-                    # Run the agent and stream the response
-                    run_response = sql_agent.run(question, stream=True)
-                    for _resp_chunk in run_response:
-                        # Display tool calls if available
-                        if _resp_chunk.tools and len(_resp_chunk.tools) > 0:
-                            display_tool_calls(tool_calls_container, _resp_chunk.tools)
+                    # Run the agent and get the response using the new method
+                    AGENT_RESPONSE = asyncio.run(
+                        get_sql_agent(
+                            user_id=user_id,
+                            session_id=session_id,
+                            model_id=model_id,
+                            message=question,
+                        )
+                    )
 
-                        # Display response
-                        if _resp_chunk.content is not None:
-                            response += _resp_chunk.content
-                            resp_container.markdown(response)
+                    # Display response
+                    response = AGENT_RESPONSE
+                    resp_container.markdown(response)
 
-                    add_message("assistant", response, sql_agent.run_response.tools)
+                    add_message("assistant", response)
                 except Exception as e:
                     error_message = f"Sorry, I encountered an error: {str(e)}"
                     add_message("assistant", error_message)
@@ -158,8 +179,19 @@ def main() -> None:
     ####################################################################
     # Session selector
     ####################################################################
-    session_selector_widget(sql_agent, model_id)
-    rename_session_widget(sql_agent)
+    # Get a temporary agent for session operations
+    try:
+        temp_agent = asyncio.run(
+            get_sql_agent(
+                user_id=user_id,
+                session_id=session_id,
+                model_id=model_id,
+            )
+        )
+        session_selector_widget(temp_agent, model_id)
+        rename_session_widget(temp_agent)
+    except Exception as e:
+        st.error(f"Error loading session operations: {str(e)}")
 
     ####################################################################
     # About section

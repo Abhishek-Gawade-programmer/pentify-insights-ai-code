@@ -537,15 +537,21 @@ async def get_sql_agent(
     user_id: Optional[str] = None,
     model_id: str = "openai:gpt-4o",
     session_id: Optional[str] = None,
-    debug_mode: bool = True,
+    debug_mode: bool = False,
     message: Optional[str] = None,
-) -> Agent:
-    """Returns an instance of the SQL Agent.
+) -> Union[Agent, str]:
+    """Returns an instance of the SQL Agent or runs the agent with a message.
 
     Args:
         user_id: Optional user identifier
-        debug_mode: Enable debug logging
         model_id: Model identifier in format 'provider:model_name'
+        session_id: Optional session identifier
+        debug_mode: Enable debug logging
+        message: Optional message to run the agent with
+
+    Returns:
+        Union[Agent, str]: If message is None, returns the Agent instance.
+                          If message is provided, runs the agent and returns the response.
     """
     # Parse model provider and name
     provider, model_name = model_id.split(":")
@@ -690,9 +696,15 @@ async def get_sql_agent(
             # Set to True to display tool calls in the response message
             show_tool_calls=True,
         )
-        # Run the agent
-        run_response = await agent.arun(message, stream=True)
-        return await chat_response_streamer(run_response)
+
+        # If a message is provided, run the agent and return the response
+        if message:
+            # Run the agent
+            run_response = await agent.arun(message, stream=True)
+            return await chat_response_streamer(run_response)
+
+        # Otherwise, return the agent instance
+        return agent
 
 
 async def chat_response_streamer(run_response):

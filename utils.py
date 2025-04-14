@@ -190,10 +190,9 @@ def session_selector_widget(agent: Agent, model_id: str) -> None:
             logger.info(
                 f"---*--- Loading {model_id} run: {selected_session_id} ---*---"
             )
-            st.session_state["sql_agent"] = get_sql_agent(
-                model_id=model_id,
-                session_id=selected_session_id,
-            )
+            # Update session_id in session_state
+            st.session_state["session_id"] = selected_session_id
+            st.session_state["sql_agent_session_id"] = selected_session_id
             st.rerun()
 
 
@@ -202,6 +201,7 @@ def rename_session_widget(agent: Agent) -> None:
 
     container = st.sidebar.container()
     session_row = container.columns([3, 1], vertical_alignment="center")
+    session_name = agent.session_name
 
     # Initialize session_edit_mode if needed
     if "session_edit_mode" not in st.session_state:
@@ -211,12 +211,12 @@ def rename_session_widget(agent: Agent) -> None:
         if st.session_state.session_edit_mode:
             new_session_name = st.text_input(
                 "Session Name",
-                value=agent.session_name,
+                value=session_name,
                 key="session_name_input",
                 label_visibility="collapsed",
             )
         else:
-            st.markdown(f"Session Name: **{agent.session_name}**")
+            st.markdown(f"Session Name: **{session_name}**")
 
     with session_row[1]:
         if st.session_state.session_edit_mode:
