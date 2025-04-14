@@ -538,6 +538,7 @@ async def get_sql_agent(
     model_id: str = "openai:gpt-4o",
     session_id: Optional[str] = None,
     debug_mode: bool = True,
+    message: Optional[str] = None,
 ) -> Agent:
     """Returns an instance of the SQL Agent.
 
@@ -689,8 +690,16 @@ async def get_sql_agent(
             # Set to True to display tool calls in the response message
             show_tool_calls=True,
         )
-    #     print(agent)
-    return agent
+        # Run the agent
+        run_response = await agent.arun(message, stream=True)
+        return await chat_response_streamer(run_response)
+
+
+async def chat_response_streamer(run_response):
+    content = ""
+    async for run_response_chunk in run_response:
+        content += run_response_chunk.content
+    return content
 
 
 # Example usage
@@ -698,5 +707,11 @@ if __name__ == "__main__":
     # Baic example - exploring project license
     user_id = str(uuid.uuid4())
     session_id = str(uuid.uuid4())
-    AGENT = asyncio.run(get_sql_agent(user_id=user_id, session_id=session_id))
-    asyncio.run(AGENT.arun("can you tell me company name for  Id 4028191407  hubspot"))
+    AGENT_RESPONSE = asyncio.run(
+        get_sql_agent(
+            user_id=user_id,
+            session_id=session_id,
+            message="can you tell me company name for  Id 4028191407  hubspot",
+        )
+    )
+    print(AGENT_RESPONSE)
