@@ -1,6 +1,6 @@
 import nest_asyncio
 import streamlit as st
-from agents import get_sql_agent
+from agents import get_sql_agent, run_agent
 from agno.agent import Agent
 from agno.utils.log import logger
 from utils import (
@@ -13,6 +13,7 @@ from utils import (
     sidebar_widget,
 )
 
+import asyncio
 
 nest_asyncio.apply()
 
@@ -28,7 +29,7 @@ st.set_page_config(
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 
-def main() -> None:
+async def main() -> None:
     ####################################################################
     # App header
     ####################################################################
@@ -67,7 +68,7 @@ def main() -> None:
         or st.session_state.get("current_model") != model_id
     ):
         logger.info("---*--- Creating new SQL agent ---*---")
-        sql_agent = get_sql_agent(model_id=model_id)
+        sql_agent = await get_sql_agent(model_id=model_id)
         st.session_state["sql_agent"] = sql_agent
         st.session_state["current_model"] = model_id
     else:
@@ -138,7 +139,13 @@ def main() -> None:
                 response = ""
                 try:
                     # Run the agent and stream the response
-                    run_response = sql_agent.run(question, stream=True)
+
+                    run_response = await run_agent(
+                        message=question,
+                        user_id="abhishek",
+                        session_id=st.session_state["sql_agent_session_id"],
+                        model_id=model_id,
+                    )
                     for _resp_chunk in run_response:
                         # Display tool calls if available
                         if _resp_chunk.tools and len(_resp_chunk.tools) > 0:
@@ -168,4 +175,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

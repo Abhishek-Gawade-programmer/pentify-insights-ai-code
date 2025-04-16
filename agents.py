@@ -51,6 +51,8 @@ from tools import (
     visualize_sql_results,
 )
 
+from agno.tools.mcp import MCPTools
+
 # ************* Database Connection *************
 db_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 # *******************************
@@ -97,11 +99,12 @@ agent_knowledge = CombinedKnowledgeBase(
 # *******************************
 
 
-def get_sql_agent(
+async def get_sql_agent(
     user_id: Optional[str] = None,
     model_id: str = "openai:gpt-4o",
     session_id: Optional[str] = None,
     debug_mode: bool = True,
+    session=None,
 ) -> Agent:
     """Returns an instance of the SQL Agent.
 
@@ -109,7 +112,11 @@ def get_sql_agent(
         user_id: Optional user identifier
         debug_mode: Enable debug logging
         model_id: Model identifier in format 'provider:model_name'
+
     """
+
+    mcp_tools = MCPTools(session=session)
+    await mcp_tools.initialize()
     # Parse model provider and name
     provider, model_name = model_id.split(":")
 
@@ -144,6 +151,7 @@ def get_sql_agent(
             create_pie_chart,
             create_line_chart,
             visualize_sql_results,  # Add the new helper function
+            mcp_tools,
         ],
         add_history_to_messages=True,
         num_history_responses=3,
@@ -153,4 +161,58 @@ def get_sql_agent(
         instructions=INSTRUCTIONS,
         additional_context=ADDITIONAL_CONTEXT,
         reasoning=True,
+    )
+
+
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+
+async def run_agent(
+    message: str,
+    user_id: Optional[str] = None,
+    model_id: str = "openai:gpt-4o",
+    session_id: Optional[str] = None,
+    debug_mode: bool = True,
+    session=None,
+) -> None:
+
+    print("args", session_id, user_id, model_id)
+
+    mcp_server_cmd = "/home/abhishek/ai-code/pentify-insights-ai-code/venv/bin/python"
+    mcp_server_args = [
+        "/home/abhishek/ai-code/pentify-insights-ai-code/hubspot_integration/mcp_server.py"
+    ]
+
+    # Initialize the MCP server
+    server_params = StdioServerParameters(
+        command=mcp_server_cmd,
+        args=mcp_server_args,
+    )
+
+    # Create a client session to connect to the MCP server
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            print(session)
+            agent = await get_sql_agent(
+                session=session,
+                user_id=user_id,
+                model_id=model_id,
+                session_id=session_id,
+                debug_mode=debug_mode,
+            )
+
+            # Run the agent
+            await agent.arun(message, stream=True)
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    asyncio.run(
+        run_agent(
+            "can you tell me company name for  Id 4028191407  hubspot",
+            user_id="abhishek",
+            model_id="openai:gpt-4o",
+        )
     )
