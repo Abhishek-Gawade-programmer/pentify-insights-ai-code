@@ -68,11 +68,6 @@
       "description": "Email address used specifically for invoicing."
     },
     {
-      "name": "id_code",
-      "type": "character varying",
-      "description": "Unique identification code for the company. use this to identify the company in the database. you can use this to search for the company in the database. with company_id"
-    },
-    {
       "name": "is_client",
       "type": "integer",
       "description": "Indicator if the company is a client (e.g., 1 for client, 0 for non-client)."
