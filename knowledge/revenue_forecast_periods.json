@@ -1,0 +1,41 @@
+{
+  "table_name": "revenue_forecast_periods",
+  "table_description": "Tracks revenue forecasts and recognized revenue across different time periods for projects and quotes.",
+  "table_columns": [
+    {
+      "name": "forecasted_revenue",
+      "type": "double precision",
+      "description": "The projected or estimated revenue amount for the period. important column for query"
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Unique identifier for the revenue forecast period record."
+    },
+    {
+      "name": "period",
+      "type": "text",
+      "description": "The time period (e.g., month, quarter, year) for which the revenue is forecasted or recognized."
+    },
+    {
+      "name": "project_id",
+      "type": "double precision",
+      "description": "Reference to the project associated with this revenue forecast."
+    },
+    {
+      "name": "quote_id",
+      "type": "double precision",
+      "description": "Reference to the quote associated with this revenue forecast."
+    },
+    {
+      "name": "recognized_revenue",
+      "type": "double precision",
+      "description": "The actual revenue that has been recognized or realized for the period."
+    },
+    {
+      "name": "_weld_synced",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    }
+  ]
+}
