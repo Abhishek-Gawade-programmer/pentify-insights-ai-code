@@ -156,8 +156,9 @@ async def main() -> None:
                             response += _resp_chunk.content
                             resp_container.markdown(response)
 
-                    add_message("assistant", response, sql_agent.run_response.tools)
+                    add_message("assistant", response, _resp_chunk.tools)
                 except Exception as e:
+                    raise e
                     error_message = f"Sorry, I encountered an error: {str(e)}"
                     add_message("assistant", error_message)
                     st.error(error_message)

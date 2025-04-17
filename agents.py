@@ -115,14 +115,16 @@ async def get_sql_agent(
 
     """
 
-    mcp_tools = MCPTools(session=session)
-    await mcp_tools.initialize()
+    mcp_tools = None
+    if session is not None:
+        mcp_tools = MCPTools(session=session)
+        await mcp_tools.initialize()
     # Parse model provider and name
     provider, model_name = model_id.split(":")
 
     # Select appropriate model class based on provider
     if provider == "openai":
-        model = OpenAIChat(id="gpt-4o-mini")
+        model = OpenAIChat(id="gpt-4o")
     elif provider == "google":
         model = Gemini(id=model_name)
     elif provider == "anthropic":
@@ -160,12 +162,19 @@ async def get_sql_agent(
         description=AGENT_DESCRIPTION,
         instructions=INSTRUCTIONS,
         additional_context=ADDITIONAL_CONTEXT,
-        reasoning=True,
+        # reasoning=True,
     )
 
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+
+
+async def chat_response_streamer(run_response):
+    content_list = []
+    async for run_response_chunk in run_response:
+        content_list.append(run_response_chunk)
+    return content_list
 
 
 async def run_agent(
@@ -203,16 +212,18 @@ async def run_agent(
             )
 
             # Run the agent
-            await agent.arun(message, stream=True)
+            run_response = await agent.arun(message, stream=True)
+            return await chat_response_streamer(run_response)
 
 
 if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(
+    result = asyncio.run(
         run_agent(
             "can you tell me company name for  Id 4028191407  hubspot",
             user_id="abhishek",
             model_id="openai:gpt-4o",
         )
     )
+    print(result)
