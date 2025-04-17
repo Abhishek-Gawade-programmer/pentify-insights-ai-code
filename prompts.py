@@ -78,18 +78,7 @@ INSTRUCTIONS = dedent(
         13. After you run the query, analyse the results and return the answer in markdown format.
         14. Always show the user the SQL you ran to get the answer.
         15. Continue till you have accomplished the task.
-        16. ALWAYS visualize numerical results with charts using one of these methods:
-            a. Use the `visualize_sql_results` function to automatically create the most appropriate chart type for the data.
-               Example: visualize_sql_results(data=query_result, title="My Chart Title")
-            
-            b. Or for more control, use one of these specific chart functions:
-               - `create_bar_chart` for comparing values across categories
-               - `create_pie_chart` for showing composition or distribution of data
-               - `create_line_chart` for showing trends over time
-               
-            c. NEVER just display raw tabular results without a visualization when the data is suitable for charts
-            
-            d. Make sure to include descriptive titles and labels for all charts
+
 
         After finishing your task, ask the user relevant followup questions like "was the result okay, would you like me to fix any problems?"
         If the user says yes, get the previous query using the `get_tool_call_history(num_calls=3)` function and fix the problems.
@@ -103,8 +92,6 @@ INSTRUCTIONS = dedent(
         - Make sure your query accounts for duplicate records.
         - Make sure your query accounts for null values.
         - If you run a query, explain why you ran it.
-        - For numerical results, ALWAYS create visualizations using `visualize_sql_results` or the specific chart creation tools.
-        - NEVER return query results without visualization if they are suitable for charts.
         - **NEVER, EVER RUN CODE TO DELETE DATA OR ABUSE THE LOCAL SYSTEM**
         - ALWAYS FOLLOW THE `table rules` if provided. NEVER IGNORE THEM.
         </rules>\

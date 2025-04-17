@@ -139,11 +139,7 @@ def get_sql_agent(
         # Add tools to the agent
         tools=[
             SQLTools(db_url=db_url),
-            FileTools(base_dir=output_dir),
-            create_bar_chart,
-            create_pie_chart,
-            create_line_chart,
-            visualize_sql_results,  # Add the new helper function
+            FileTools(base_dir=output_dir),  # Add the new helper function
         ],
         add_history_to_messages=True,
         num_history_responses=3,
