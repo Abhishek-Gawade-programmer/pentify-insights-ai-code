@@ -55,7 +55,7 @@
     {
       "name": "id",
       "type": "integer",
-      "description": "Unique identifier for the project."
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
     },
     {
       "name": "is_private",
@@ -85,7 +85,7 @@
     {
       "name": "no",
       "type": "character varying",
-      "description": "Project number or code."
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
     },
     {
       "name": "owner_email",
@@ -95,7 +95,7 @@
     {
       "name": "person_id",
       "type": "integer",
-      "description": "Identifier for the contact associated with the project."
+      "description": "Identifier for the contact associated with the project.VERY IMPORTANT: treat this column as primary key like 'id' for table."
     },
     {
       "name": "person_name",
@@ -105,7 +105,7 @@
     {
       "name": "status",
       "type": "character varying",
-      "description": "Status code representing the current state of the project."
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
     },
     {
       "name": "status_name",

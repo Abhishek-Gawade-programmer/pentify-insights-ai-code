@@ -105,12 +105,12 @@
     {
       "name": "discount2",
       "type": "numeric",
-      "description": "Secondary discount value, if applicable."
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
     },
     {
       "name": "discount3",
       "type": "numeric",
-      "description": "Tertiary discount value, if applicable."
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
     },
     {
       "name": "estimated_closing_date",

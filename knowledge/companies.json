@@ -10,7 +10,7 @@
     {
       "name": "address_contacts_addresses_id",
       "type": "integer",
-      "description": "Reference ID for the related address record in contacts, if applicable."
+      "description": "DON'T USE THIS COLUMN FOR ANYTHING. IN QUERY"
     },
     {
       "name": "address_country",
@@ -45,7 +45,7 @@
     {
       "name": "contact_id",
       "type": "character varying",
-      "description": "Primary contact identifier associated with the company."
+      "description": "treat this column as primary key like 'id' for table. Primary contact identifier associated with the company."
     },
     {
       "name": "contact_type",

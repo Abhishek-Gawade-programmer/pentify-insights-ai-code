@@ -45,7 +45,7 @@
     {
       "name": "contact_id",
       "type": "character varying",
-      "description": "Unique identifier for the contact."
+      "description": "treat this column as primary key like 'id' for table. Unique identifier for the contact."
     },
     {
       "name": "contact_type",
