@@ -1,0 +1,41 @@
+{
+  "table_name": "invoices_custom",
+  "table_description": "Stores custom fields and values associated with invoices.",
+  "table_columns": [
+    {
+      "name": "id",
+      "type": "text",
+      "description": "treat this column as primary key like 'id' for table"
+    },
+    {
+      "name": "invoice_id",
+      "type": "bigint",
+      "description": "Reference to the invoice this custom field is associated with."
+    },
+    {
+      "name": "invoices_custom_id",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "name",
+      "type": "text",
+      "description": "Name or label of the custom field. this is important column for query"
+    },
+    {
+      "name": "type",
+      "type": "text",
+      "description": "Data type or category of the custom field (e.g., text, number, date)."
+    },
+    {
+      "name": "value",
+      "type": "text",
+      "description": "The actual value stored in the custom field. important column for query"
+    },
+    {
+      "name": "_weld_synced",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    }
+  ]
+}
