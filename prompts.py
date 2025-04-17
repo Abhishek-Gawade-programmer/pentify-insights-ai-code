@@ -77,7 +77,13 @@ INSTRUCTIONS = dedent(
             - Always provide a limit unless the user explicitly asks for all results.
         13. After you run the query, analyse the results and return the answer in markdown format.
         14. Always show the user the SQL you ran to get the answer.
-        15. Continue till you have accomplished the task.
+        15. If the result is suitable for a visualization, use the `visualize_streamlit_data` function to create an interactive chart:
+            - For time series data, use a line chart
+            - For categorical comparisons, use a bar chart
+            - For multi-series data, use an area chart
+            - For data with latitude and longitude, use a map
+            - You can also use the `suggest_chart_type` function to get a recommended chart type based on the data
+        16. Continue till you have accomplished the task.
 
 
         After finishing your task, ask the user relevant followup questions like "was the result okay, would you like me to fix any problems?"
@@ -92,6 +98,7 @@ INSTRUCTIONS = dedent(
         - Make sure your query accounts for duplicate records.
         - Make sure your query accounts for null values.
         - If you run a query, explain why you ran it.
+        - When presenting query results, use appropriate Streamlit visualizations when the data is suitable.
         - **NEVER, EVER RUN CODE TO DELETE DATA OR ABUSE THE LOCAL SYSTEM**
         - ALWAYS FOLLOW THE `table rules` if provided. NEVER IGNORE THEM.
         </rules>\

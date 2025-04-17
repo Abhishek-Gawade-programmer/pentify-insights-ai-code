@@ -5,6 +5,7 @@ import seaborn as sns
 from pathlib import Path
 import os
 import json
+import streamlit as st
 
 
 cwd = Path(__file__).parent
@@ -16,7 +17,7 @@ output_dir.mkdir(parents=True, exist_ok=True)
 
 # *******************************
 def create_bar_chart(
-    data: Union[str, Dict[str, List[Any]]],
+    data: str,
     title: str,
     x_label: str,
     y_label: str,
@@ -29,7 +30,7 @@ def create_bar_chart(
     Create a bar chart from the provided data and save it as a PNG file.
 
     Args:
-        data: JSON string or dictionary containing the data for the chart.
+        data: JSON string containing the data for the chart.
               Should have keys for x and y values.
         title: Title of the chart.
         x_label: Label for the x-axis.
@@ -45,10 +46,9 @@ def create_bar_chart(
     plt.figure(figsize=(10, 6))
 
     # Convert data to DataFrame if it's a JSON string
-    if isinstance(data, str):
-        data = json.loads(data)
+    data_dict = json.loads(data) if isinstance(data, str) else data
 
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data_dict)
 
     # Get the column names
     if len(df.columns) < 2:
@@ -86,7 +86,7 @@ def create_bar_chart(
 
 
 def create_pie_chart(
-    data: Union[str, Dict[str, List[Any]]],
+    data: str,
     title: str,
     filename: str = "pie_chart.png",
     colors: Optional[List[str]] = None,
@@ -97,7 +97,7 @@ def create_pie_chart(
     Create a pie chart from the provided data and save it as a PNG file.
 
     Args:
-        data: JSON string or dictionary containing the data for the chart.
+        data: JSON string containing the data for the chart.
               Should have keys for labels and values.
         title: Title of the chart.
         filename: Output filename (will be saved in the output directory).
@@ -111,10 +111,9 @@ def create_pie_chart(
     plt.figure(figsize=(10, 8))
 
     # Convert data to DataFrame if it's a JSON string
-    if isinstance(data, str):
-        data = json.loads(data)
+    data_dict = json.loads(data) if isinstance(data, str) else data
 
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data_dict)
 
     # Get the column names
     if len(df.columns) < 2:
@@ -155,7 +154,7 @@ def create_pie_chart(
 
 
 def create_line_chart(
-    data: Union[str, Dict[str, List[Any]]],
+    data: str,
     title: str,
     x_label: str,
     y_label: str,
@@ -168,7 +167,7 @@ def create_line_chart(
     Create a line chart from the provided data and save it as a PNG file.
 
     Args:
-        data: JSON string or dictionary containing the data for the chart.
+        data: JSON string containing the data for the chart.
               Should have keys for x and y values.
         title: Title of the chart.
         x_label: Label for the x-axis.
@@ -184,10 +183,9 @@ def create_line_chart(
     plt.figure(figsize=(10, 6))
 
     # Convert data to DataFrame if it's a JSON string
-    if isinstance(data, str):
-        data = json.loads(data)
+    data_dict = json.loads(data) if isinstance(data, str) else data
 
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data_dict)
 
     # Get the column names
     if len(df.columns) < 2:
@@ -218,33 +216,32 @@ def create_line_chart(
     return output_path
 
 
-def suggest_chart_type(data: Union[str, Dict[str, List[Any]]]) -> Dict[str, Any]:
+def suggest_chart_type(data: str) -> Dict[str, Any]:
     """
     Analyzes SQL query results and suggests appropriate chart type and configuration.
 
     Args:
-        data: JSON string or dictionary containing the query results
+        data: JSON string containing the query results
 
     Returns:
         dict: A dictionary with chart suggestion including:
-            - chart_type: The recommended chart type ('bar', 'pie', 'line', or 'table')
+            - chart_type: The recommended chart type ('bar', 'pie', 'line', 'area', 'map', or 'table')
             - reason: Explanation for why this chart type was selected
             - config: Suggested configuration parameters for the chart
     """
     # Convert data to DataFrame if it's a JSON string
-    if isinstance(data, str):
-        try:
-            data = json.loads(data)
-        except:
-            return {
-                "chart_type": "table",
-                "reason": "Could not parse data as JSON",
-                "config": {},
-            }
+    try:
+        data_dict = json.loads(data) if isinstance(data, str) else data
+    except:
+        return {
+            "chart_type": "table",
+            "reason": "Could not parse data as JSON",
+            "config": {},
+        }
 
     # Convert to DataFrame for analysis
     try:
-        df = pd.DataFrame(data)
+        df = pd.DataFrame(data_dict)
     except:
         return {
             "chart_type": "table",
@@ -283,7 +280,25 @@ def suggest_chart_type(data: Union[str, Dict[str, List[Any]]]) -> Dict[str, Any]
             "config": {},
         }
 
-    # Choose appropriate chart based on data characteristics
+    # Check for geo data (latitude and longitude) for map visualization
+    has_lat = any(col.lower() in ["lat", "latitude"] for col in df.columns)
+    has_lon = any(col.lower() in ["lon", "long", "longitude"] for col in df.columns)
+
+    # Case 0: Geo data - use map
+    if has_lat and has_lon:
+        lat_col = next(col for col in df.columns if col.lower() in ["lat", "latitude"])
+        lon_col = next(
+            col for col in df.columns if col.lower() in ["lon", "long", "longitude"]
+        )
+        return {
+            "chart_type": "map",
+            "reason": "Geographic data detected - map is best for showing spatial distribution",
+            "config": {
+                "lat_col": lat_col,
+                "lon_col": lon_col,
+                "title": "Geographic Distribution",
+            },
+        }
 
     # Case 1: Time series data - use line chart
     if date_cols and numeric_cols:
@@ -291,46 +306,34 @@ def suggest_chart_type(data: Union[str, Dict[str, List[Any]]]) -> Dict[str, Any]
             "chart_type": "line",
             "reason": "Time series data detected - line chart is best for showing trends over time",
             "config": {
-                "x_col": date_cols[0],
-                "y_col": numeric_cols[0],
+                "x": date_cols[0],
+                "y": numeric_cols[0],
                 "title": f"{numeric_cols[0]} over Time",
-                "x_label": date_cols[0],
-                "y_label": numeric_cols[0],
             },
         }
 
-    # Case 2: Distribution/proportion data with few categories (2-7) - use pie chart
-    if (
-        categorical_cols
-        and numeric_cols
-        and 2 <= len(df[categorical_cols[0]].unique()) <= 7
-    ):
+    # Case 2: Area chart for cumulative or stacked data
+    if (date_cols or len(numeric_cols) > 1) and len(numeric_cols) > 1:
         return {
-            "chart_type": "pie",
-            "reason": "Distribution data with few categories - pie chart shows proportion effectively",
+            "chart_type": "area",
+            "reason": "Multiple numeric series detected - area chart shows stacked or cumulative values well",
             "config": {
-                "label_col": categorical_cols[0],
-                "value_col": numeric_cols[0],
-                "title": f"Distribution of {numeric_cols[0]} by {categorical_cols[0]}",
+                "x": date_cols[0] if date_cols else df.index.name or "index",
+                "y": numeric_cols,
+                "title": "Data Trends",
             },
         }
 
     # Case 3: Categorical comparison - use bar chart
     if categorical_cols and numeric_cols:
-        # Check if we need a horizontal bar chart (for long category names)
-        horizontal = max(len(str(x)) for x in df[categorical_cols[0]].unique()) > 10
-
         return {
             "chart_type": "bar",
             "reason": "Categorical comparison data - bar chart is best for comparing values across categories",
             "config": {
-                "x_col": categorical_cols[0],
-                "y_col": numeric_cols[0],
+                "x": categorical_cols[0],
+                "y": numeric_cols[0],
                 "title": f"{numeric_cols[0]} by {categorical_cols[0]}",
-                "x_label": categorical_cols[0],
-                "y_label": numeric_cols[0],
-                "horizontal": horizontal,
-                "sort_values": True,
+                "color": categorical_cols[0] if len(categorical_cols) > 1 else None,
             },
         }
 
@@ -339,82 +342,172 @@ def suggest_chart_type(data: Union[str, Dict[str, List[Any]]]) -> Dict[str, Any]
         "chart_type": "bar",
         "reason": "Generic numeric data - bar chart is a safe default visualization",
         "config": {
-            "x_col": df.columns[0],
-            "y_col": numeric_cols[0],
+            "x": df.columns[0],
+            "y": numeric_cols[0],
             "title": f"{numeric_cols[0]} Analysis",
-            "x_label": df.columns[0],
-            "y_label": numeric_cols[0],
         },
     }
 
 
-def visualize_sql_results(
-    data: Union[str, Dict[str, List[Any]]],
+def visualize_streamlit_data(
+    data: str,
     chart_type: Optional[str] = None,
     title: Optional[str] = None,
-    **kwargs,
-) -> str:
+    x: Optional[str] = None,
+    y: Optional[Union[str, List[str]]] = None,
+    color: Optional[Union[str, List[str]]] = None,
+    lat: Optional[str] = None,
+    lon: Optional[str] = None,
+    use_container_width: bool = True,
+    horizontal: bool = False,
+    stack: Optional[Union[bool, str]] = None,
+    width: Optional[int] = None,
+    height: Optional[int] = None,
+) -> Dict[str, Any]:
     """
-    Helper function to visualize SQL query results with the most appropriate chart type.
+    Visualize data using Streamlit's chart components based on the data and chart type.
 
     Args:
-        data: JSON string or dictionary containing the query results
-        chart_type: Optional chart type to override automatic detection ('bar', 'pie', 'line')
-        title: Optional chart title
-        **kwargs: Additional parameters to pass to the chart creation function
+        data: JSON string containing the data for the chart
+        chart_type: Type of chart to create ('bar', 'line', 'area', 'map', or 'table')
+        title: Title for the chart
+        x: Column name for x-axis data
+        y: Column name(s) for y-axis data (can be a list for multiple series)
+        color: Column name for color encoding or list of colors
+        lat: Column name for latitude data (for map charts)
+        lon: Column name for longitude data (for map charts)
+        use_container_width: Whether to expand chart to container width
+        horizontal: Whether to make a horizontal bar chart
+        stack: How to stack bars ('normalize', 'center', 'layered', True, False, or None)
+        width: Desired chart width in pixels (when use_container_width is False)
+        height: Desired chart height in pixels
 
     Returns:
-        str: Path to the saved chart image or explanation why visualization couldn't be created
+        dict: Information about the visualization including chart_type and success status
     """
+    # Convert data to DataFrame if it's a JSON string
+    try:
+        data_dict = json.loads(data) if isinstance(data, str) else data
+        df = pd.DataFrame(data_dict)
+    except Exception as e:
+        return {
+            "chart_type": "table",
+            "success": False,
+            "error": f"Failed to convert data to DataFrame: {str(e)}",
+        }
+
     # If chart_type is not specified, suggest one based on the data
     if not chart_type:
         suggestion = suggest_chart_type(data)
         chart_type = suggestion["chart_type"]
 
-        # Use suggested config if not provided in kwargs
-        for key, value in suggestion["config"].items():
-            if key not in kwargs:
-                kwargs[key] = value
-
-        # Use suggested title if not provided
+        # Use suggested config if not provided
+        if not x and "x" in suggestion["config"]:
+            x = suggestion["config"].get("x")
+        if not y and "y" in suggestion["config"]:
+            y = suggestion["config"].get("y")
+        if not color and "color" in suggestion["config"]:
+            color = suggestion["config"].get("color")
+        if not lat and "lat_col" in suggestion["config"]:
+            lat = suggestion["config"].get("lat_col")
+        if not lon and "lon_col" in suggestion["config"]:
+            lon = suggestion["config"].get("lon_col")
         if not title and "title" in suggestion["config"]:
-            title = suggestion["config"]["title"]
+            title = suggestion["config"].get("title")
 
     # Ensure we have a chart title
-    if not title:
-        title = "Data Visualization"
+    if title:
+        st.markdown(f"### {title}")
 
-    # Create the appropriate chart based on chart_type
-    if chart_type == "bar":
-        return create_bar_chart(
-            data=data,
-            title=title,
-            x_label=kwargs.get("x_label", "Category"),
-            y_label=kwargs.get("y_label", "Value"),
-            filename=kwargs.get("filename", "sql_bar_chart.png"),
-            color=kwargs.get("color", "blue"),
-            horizontal=kwargs.get("horizontal", False),
-            sort_values=kwargs.get("sort_values", False),
-        )
-    elif chart_type == "pie":
-        return create_pie_chart(
-            data=data,
-            title=title,
-            filename=kwargs.get("filename", "sql_pie_chart.png"),
-            colors=kwargs.get("colors", None),
-            explode=kwargs.get("explode", None),
-            autopct=kwargs.get("autopct", "%1.1f%%"),
-        )
-    elif chart_type == "line":
-        return create_line_chart(
-            data=data,
-            title=title,
-            x_label=kwargs.get("x_label", "X Axis"),
-            y_label=kwargs.get("y_label", "Y Axis"),
-            filename=kwargs.get("filename", "sql_line_chart.png"),
-            color=kwargs.get("color", "blue"),
-            marker=kwargs.get("marker", "o"),
-            linestyle=kwargs.get("linestyle", "-"),
-        )
-    else:
-        return "No appropriate visualization could be created for this data"
+    try:
+        # Create the appropriate chart based on chart_type
+        if chart_type == "bar":
+            chart = st.bar_chart(
+                data=df,
+                x=x,
+                y=y,
+                color=color,
+                horizontal=horizontal,
+                stack=stack,
+                width=width,
+                height=height,
+                use_container_width=use_container_width,
+            )
+            return {"chart_type": "bar", "success": True}
+
+        elif chart_type == "line":
+            chart = st.line_chart(
+                data=df,
+                x=x,
+                y=y,
+                color=color,
+                width=width,
+                height=height,
+                use_container_width=use_container_width,
+            )
+            return {"chart_type": "line", "success": True}
+
+        elif chart_type == "area":
+            chart = st.area_chart(
+                data=df,
+                x=x,
+                y=y,
+                color=color,
+                width=width,
+                height=height,
+                use_container_width=use_container_width,
+            )
+            return {"chart_type": "area", "success": True}
+
+        elif chart_type == "map":
+            # For map charts, prepare the data
+            if lat and lon:
+                # Select only the columns needed for the map
+                map_data = df[[lat, lon]].copy()
+                # Rename columns to lat/lon if they aren't already
+                map_data.columns = ["lat", "lon"] + [
+                    c for c in map_data.columns if c not in [lat, lon]
+                ]
+            else:
+                # Look for standard latitude/longitude column names
+                lat_col = next(
+                    (c for c in df.columns if c.lower() in ["lat", "latitude"]), None
+                )
+                lon_col = next(
+                    (
+                        c
+                        for c in df.columns
+                        if c.lower() in ["lon", "long", "longitude"]
+                    ),
+                    None,
+                )
+
+                if lat_col and lon_col:
+                    map_data = df[[lat_col, lon_col]].copy()
+                    map_data.columns = ["lat", "lon"] + [
+                        c for c in map_data.columns if c not in [lat_col, lon_col]
+                    ]
+                else:
+                    return {
+                        "chart_type": "table",
+                        "success": False,
+                        "error": "Could not identify latitude and longitude columns for map",
+                    }
+
+            st.map(map_data, use_container_width=use_container_width)
+            return {"chart_type": "map", "success": True}
+
+        else:
+            # Default to a table if no suitable chart type is found
+            st.dataframe(df, use_container_width=use_container_width)
+            return {"chart_type": "table", "success": True}
+
+    except Exception as e:
+        # If visualization fails, show the data as a table
+        st.error(f"Failed to create {chart_type} chart: {str(e)}")
+        st.dataframe(df, use_container_width=use_container_width)
+        return {
+            "chart_type": "table",
+            "success": False,
+            "error": str(e),
+        }

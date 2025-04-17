@@ -39,17 +39,11 @@ from agno.models.anthropic import Claude
 from agno.models.google import Gemini
 from agno.models.openai import OpenAIChat
 from agno.storage.agent.postgres import PostgresAgentStorage
-from agno.tools.file import FileTools
 from agno.tools.sql import SQLTools
 from agno.vectordb.pgvector import PgVector
 
 from prompts import AGENT_DESCRIPTION, INSTRUCTIONS, ADDITIONAL_CONTEXT
-from tools import (
-    create_bar_chart,
-    create_pie_chart,
-    create_line_chart,
-    visualize_sql_results,
-)
+from tools import visualize_streamlit_data, suggest_chart_type
 
 # ************* Database Connection *************
 db_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
@@ -115,13 +109,16 @@ def get_sql_agent(
 
     # Select appropriate model class based on provider
     if provider == "openai":
-        model = OpenAIChat(id="o4-mini-2025-04-16")
+        model = OpenAIChat(id="gpt-4o-mini")
     elif provider == "google":
         model = Gemini(id=model_name)
     elif provider == "anthropic":
         model = Claude(id=model_name)
     else:
         raise ValueError(f"Unsupported model provider: {provider}")
+
+    # Create SQL tools with custom visualization functions
+    sql_tools = SQLTools(db_url=db_url)
 
     return Agent(
         name="SQL Agent",
@@ -137,10 +134,7 @@ def get_sql_agent(
         # Enable the ability to read the tool call history
         read_tool_call_history=True,
         # Add tools to the agent
-        tools=[
-            SQLTools(db_url=db_url),
-            FileTools(base_dir=output_dir),  # Add the new helper function
-        ],
+        tools=[sql_tools, visualize_streamlit_data, suggest_chart_type],
         add_history_to_messages=True,
         num_history_responses=3,
         add_datetime_to_instructions=True,

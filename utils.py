@@ -66,24 +66,11 @@ def display_tool_calls(container, tool_calls):
         with container.container():
             st.markdown(f"**Tool Call:** `{tool_name}`")
 
-            # Special handling for chart tools that return image paths
-            if tool_name in [
-                "create_bar_chart",
-                "create_pie_chart",
-                "create_line_chart",
-            ]:
-                result = tool_call.get("content")
-                # If the output is a path to an image, display the image using st.image
-                if (
-                    isinstance(result, str)
-                    and result.endswith(".png")
-                    and os.path.exists(result)
-                ):
-                    st.image(
-                        result,
-                        caption=os.path.basename(result),
-                        use_container_width=True,
-                    )
+            # Handle Streamlit visualization tool calls
+            if tool_name == "visualize_streamlit_data":
+                # For streamlit visualization, the display is handled directly in the tool function
+                # We don't need to do anything here as the chart is already rendered
+                pass
             else:
                 # For other tool calls, just display the output
                 result = tool_call.get("content")
