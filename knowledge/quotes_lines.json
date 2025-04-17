@@ -1,0 +1,176 @@
+{
+  "table_name": "quote_lines",
+  "table_description": "quote lines represent individual items or services included in a quote or price proposal. They are the building blocks of a quote, detailing the specific products, quantities, prices, and other relevant information for each line. Quote lines can be either product-based, where the quoted value is determined by the quantity and price of a product, or project-based, where the quoted value is determined by estimated work and resources. ",
+  "table_columns": [
+    {
+      "name": "amount",
+      "type": "double precision",
+      "description": "Quantity or amount of the product or service in the quote line."
+    },
+    {
+      "name": "comment",
+      "type": "text",
+      "description": "Additional notes or comments about the quote line item."
+    },
+    {
+      "name": "cost",
+      "type": "double precision",
+      "description": "Cost value associated with the quote line item."
+    },
+    {
+      "name": "custom_fields",
+      "type": "double precision",
+      "description": "Custom field values associated with the quote line."
+    },
+    {
+      "name": "dates",
+      "type": "text",
+      "description": "Date information related to the quote line item."
+    },
+    {
+      "name": "discount",
+      "type": "double precision",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "doer_email",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "doer_id",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "finance_account_id",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "finance_account_name",
+      "type": "double precision",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "finance_account_symbol",
+      "type": "double precision",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "finance_object_id",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "finance_object_name",
+      "type": "text",
+      "description": "Name of the finance object linked to this quote line."
+    },
+    {
+      "name": "finance_object_symbol",
+      "type": "text",
+      "description": "Symbol or code for the finance object linked to this quote line."
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Unique identifier for the quote line item."
+    },
+    {
+      "name": "is_confirmed",
+      "type": "bigint",
+      "description": "Indicator if the quote line has been confirmed (e.g., 1 for confirmed, 0 for not confirmed)."
+    },
+    {
+      "name": "is_internal",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "price",
+      "type": "double precision",
+      "description": "Unit price for the product or service in this line item. important column for query"
+    },
+    {
+      "name": "product_code",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "product_id",
+      "type": "bigint",
+      "description": "Identifier for the product associated with this line item."
+    },
+    {
+      "name": "product_name",
+      "type": "text",
+      "description": "Name of the product or service in this line item."
+    },
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "Identifier for the project associated with this quote line. we need use this in join"
+    },
+    {
+      "name": "project_name",
+      "type": "text",
+      "description": "Name of the project associated with this quote line."
+    },
+    {
+      "name": "quote_id",
+      "type": "bigint",
+      "description": "Reference to the quote this line item belongs to."
+    },
+    {
+      "name": "role_id",
+      "type": "bigint",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "role_name",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    },
+    {
+      "name": "sum",
+      "type": "double precision",
+      "description": "Total sum for this line item (typically price × amount)."
+    },
+    {
+      "name": "supplier_id",
+      "type": "bigint",
+      "description": "Identifier for the supplier of the product or service in this line."
+    },
+    {
+      "name": "supplier_name",
+      "type": "text",
+      "description": "Name of the supplier for this line item."
+    },
+    {
+      "name": "unit",
+      "type": "text",
+      "description": "Unit of measurement for the product or service (e.g., hours, pieces)."
+    },
+    {
+      "name": "vat",
+      "type": "double precision",
+      "description": "VAT amount applied to this line item."
+    },
+    {
+      "name": "vat_code",
+      "type": "text",
+      "description": "VAT code applied to this line item."
+    },
+    {
+      "name": "vat_code_id",
+      "type": "double precision",
+      "description": "Identifier for the VAT code used in this line item."
+    },
+    {
+      "name": "_weld_synced",
+      "type": "text",
+      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+    }
+  ]
+}

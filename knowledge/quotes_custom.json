@@ -5,7 +5,7 @@
     {
       "name": "id",
       "type": "text",
-      "description": "DONT USE THIS COLUMN FOR ANYTHING. IN QUERY"
+      "description": "treat this column as primary key like 'id' for table"
     },
     {
       "name": "name",
