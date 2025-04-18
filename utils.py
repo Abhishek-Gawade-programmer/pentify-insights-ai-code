@@ -141,11 +141,8 @@ def sidebar_widget() -> None:
             ):
                 st.success("Chat history exported!")
 
-        if st.sidebar.button("📚 Load Knowledge"):
-            load_data_and_knowledge()
 
-
-def session_selector_widget(agent: Agent, model_id: str) -> None:
+def session_selector_widget(agent: Agent) -> None:
     """Display a session selector in the sidebar"""
 
     if agent.storage:
@@ -174,11 +171,8 @@ def session_selector_widget(agent: Agent, model_id: str) -> None:
         )
 
         if st.session_state["sql_agent_session_id"] != selected_session_id:
-            logger.info(
-                f"---*--- Loading {model_id} run: {selected_session_id} ---*---"
-            )
+            logger.info(f"---*---run: {selected_session_id} ---*---")
             st.session_state["sql_agent"] = get_sql_agent(
-                model_id=model_id,
                 session_id=selected_session_id,
             )
             st.rerun()

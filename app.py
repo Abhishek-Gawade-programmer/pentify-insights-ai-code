@@ -42,34 +42,13 @@ def main() -> None:
     )
 
     ####################################################################
-    # Model selector
-    ####################################################################
-    model_options = {
-        "gpt-4o": "openai:gpt-4o",
-        "gemini-2.0-flash-exp": "google:gemini-2.0-flash-exp",
-        "claude-3-5-sonnet": "anthropic:claude-3-5-sonnet-20241022",
-    }
-    selected_model = st.sidebar.selectbox(
-        "Select a model",
-        options=list(model_options.keys()),
-        index=0,
-        key="model_selector",
-    )
-    model_id = model_options[selected_model]
-
-    ####################################################################
     # Initialize Agent
     ####################################################################
     sql_agent: Agent
-    if (
-        "sql_agent" not in st.session_state
-        or st.session_state["sql_agent"] is None
-        or st.session_state.get("current_model") != model_id
-    ):
+    if "sql_agent" not in st.session_state or st.session_state["sql_agent"] is None:
         logger.info("---*--- Creating new SQL agent ---*---")
-        sql_agent = get_sql_agent(model_id=model_id)
+        sql_agent = get_sql_agent()
         st.session_state["sql_agent"] = sql_agent
-        st.session_state["current_model"] = model_id
     else:
         sql_agent = st.session_state["sql_agent"]
 
@@ -158,7 +137,7 @@ def main() -> None:
     ####################################################################
     # Session selector
     ####################################################################
-    session_selector_widget(sql_agent, model_id)
+    session_selector_widget(sql_agent)
     rename_session_widget(sql_agent)
 
     ####################################################################
