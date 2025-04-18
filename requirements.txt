@@ -64,8 +64,9 @@ pillow
 pluggy
 proto-plus
 protobuf
-psycopg
+psycopg2
 psycopg-binary
+psycop2
 pyarrow
 pyasn1
 pyasn1_modules
