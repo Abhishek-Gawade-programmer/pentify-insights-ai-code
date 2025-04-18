@@ -64,7 +64,7 @@ pillow
 pluggy
 proto-plus
 protobuf
-psycopg2
+psycopg2-binary
 psycopg-binary
 psycop2
 pyarrow
