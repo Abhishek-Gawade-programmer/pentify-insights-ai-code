@@ -52,10 +52,7 @@ db_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 # ************* Paths *************
 cwd = Path(__file__).parent
 knowledge_dir = cwd.joinpath("knowledge")
-output_dir = cwd.joinpath("output")
 
-# Create the output directory if it does not exist
-output_dir.mkdir(parents=True, exist_ok=True)
 # *******************************
 
 # ************* Storage & Knowledge *************
@@ -95,7 +92,7 @@ def get_sql_agent(
     user_id: Optional[str] = None,
     model_id: str = "openai:gpt-4o",
     session_id: Optional[str] = None,
-    debug_mode: bool = False,
+    debug_mode: bool = True,
 ) -> Agent:
     """Returns an instance of the SQL Agent.
 
@@ -109,7 +106,7 @@ def get_sql_agent(
 
     # Select appropriate model class based on provider
     if provider == "openai":
-        model = OpenAIChat(id="gpt-4o-mini")
+        model = OpenAIChat(id="o4-mini-2025-04-16")
     elif provider == "google":
         model = Gemini(id=model_name)
     elif provider == "anthropic":

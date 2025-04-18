@@ -32,6 +32,36 @@ SEMANTIC_MODEL = {
             "table_description": "Captures financial and status details for quotes, including pricing, discounts, associated projects, and company details.",
             "Use Case": "Use this table to manage and analyze quotes issued to companies and projects, track financial details, and monitor quote status.",
         },
+        {
+            "table_name": "invoice_lines",
+            "table_description": "Contains detailed information about invoice lines, including the amount, price, and associated project and company details.",
+            "Use Case": "Use this table to analyze invoice line items, track financial details, and monitor invoice status.",
+        },
+        {
+            "table_name": "invoices",
+            "table_description": "Contains information about invoices, including the invoice number, date, and associated project and company details.",
+            "Use Case": "Use this table to analyze invoice details, track financial details, and monitor invoice status.",
+        },
+        {
+            "table_name": "invoices_custom",
+            "table_description": "Stores custom fields and values associated with invoices.",
+            "Use Case": "Use this table to analyze invoice custom field details, track financial details, and monitor invoice custom field status.",
+        },
+        {
+            "table_name": "quote_lines",
+            "table_description": "quote lines represent individual items or services included in a quote or price proposal. They are the building blocks of a quote, detailing the specific products, quantities, prices, and other relevant information for each line. Quote lines can be either product-based, where the quoted value is determined by the quantity and price of a product, or project-based, where the quoted value is determined by estimated work and resources. ",
+            "Use Case": "Use this table to analyze quote line details, track financial details, and monitor quote line status.",
+        },
+        {
+            "table_name": "quotes_custom",
+            "table_description": "Stores custom fields and values associated with quotes.",
+            "Use Case": "Use this table to analyze quote custom field details, track financial details, and monitor quote custom field status.",
+        },
+        {
+            "table_name": "revenue_forecast_periods",
+            "table_description": "Tracks revenue forecasts and recognized revenue across different time periods for projects and quotes.",
+            "Use Case": "Use this table to analyze revenue forecast details, track financial details, and monitor revenue forecast status.",
+        },
     ]
 }
 
@@ -77,7 +107,7 @@ INSTRUCTIONS = dedent(
             - Always provide a limit unless the user explicitly asks for all results.
         13. After you run the query, analyse the results and return the answer in markdown format.
         14. Always show the user the SQL you ran to get the answer.
-        15. If the result is suitable for a visualization, use the `visualize_streamlit_data` function to create an interactive chart:
+        15. If  asked for charts by user then make  suitable for a visualization, use the `visualize_streamlit_data` function to create an interactive chart:
             - For time series data, use a line chart
             - For categorical comparisons, use a bar chart
             - For multi-series data, use an area chart

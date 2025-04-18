@@ -37,6 +37,25 @@ SELECT * FROM projects WHERE id = '123';
 SELECT * FROM quotes WHERE project_id = '123';
 
 
+--- Get invoice for a company
+SELECT * FROM invoices WHERE company_id = '219'; 
+-- here you need contact_id form companies table
+
+
+-- Get invoice custom fields for an invoice
+SELECT 
+  id         AS custom_id,
+  name       AS field_name,
+  type       AS field_type,
+  value      AS field_value
+FROM invoices_custom
+WHERE invoice_id = 271
+
+
+
+
+
+
 
 
 
