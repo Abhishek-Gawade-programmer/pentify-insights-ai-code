@@ -62,7 +62,7 @@ patsy
 pgvector
 pillow
 pluggy
-proto-plus
+proto-plus==1.25.0
 protobuf==3.20.x
 psycopg2-binary
 psycopg-binary
