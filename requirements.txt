@@ -63,7 +63,7 @@ pgvector
 pillow
 pluggy
 proto-plus
-protobuf
+protobuf==3.20.x
 psycopg2-binary
 psycopg-binary
 pyarrow
