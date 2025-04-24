@@ -35,8 +35,6 @@ from agno.embedder.openai import OpenAIEmbedder
 from agno.knowledge.combined import CombinedKnowledgeBase
 from agno.knowledge.json import JSONKnowledgeBase
 from agno.knowledge.text import TextKnowledgeBase
-from agno.models.anthropic import Claude
-from agno.models.google import Gemini
 from agno.models.openai import OpenAIChat
 from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.tools.sql import SQLTools
@@ -107,10 +105,6 @@ def get_sql_agent(
     # Select appropriate model class based on provider
     if provider == "openai":
         model = OpenAIChat(id="o4-mini-2025-04-16")
-    elif provider == "google":
-        model = Gemini(id=model_name)
-    elif provider == "anthropic":
-        model = Claude(id=model_name)
     else:
         raise ValueError(f"Unsupported model provider: {provider}")
 
