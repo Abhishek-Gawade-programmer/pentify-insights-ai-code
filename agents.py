@@ -43,6 +43,7 @@ from agno.vectordb.pgvector import PgVector
 from prompts import AGENT_DESCRIPTION, INSTRUCTIONS, ADDITIONAL_CONTEXT
 from tools import visualize_streamlit_data, suggest_chart_type
 
+
 # ************* Database Connection *************
 db_url = "postgresql://neondb_owner:npg_hgMT6X1KNUBa@ep-fragrant-sky-a1l6ctkh-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 # *******************************

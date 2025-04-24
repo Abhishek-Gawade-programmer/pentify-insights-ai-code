@@ -57,9 +57,9 @@ def main() -> None:
     ####################################################################
     try:
         st.session_state["sql_agent_session_id"] = sql_agent.load_session()
-    except Exception:
+    except Exception as e:
         st.warning("Could not create Agent session, is the database running?")
-        return
+        raise e
 
     ####################################################################
     # Load runs from memory
